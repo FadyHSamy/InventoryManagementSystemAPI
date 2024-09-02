@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace InventoryManagementSystem.API.Configurations
+namespace InventoryManagementSystem.Infrastructure.Configuration
 {
     public class DatabaseSettings
     {

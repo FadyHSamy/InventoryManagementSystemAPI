@@ -1,10 +1,12 @@
-using InventoryManagementSystem.Infrastructure.Extensions;
+
+using InventoryManagementSystem.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddCustomServices();
+builder.Services.AddCustomRepository();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

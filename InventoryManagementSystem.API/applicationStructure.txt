@@ -1,0 +1,76 @@
+﻿InventoryManagementSystem
+│
+├── InventoryManagementSystem.API
+│   ├── Configuration
+│   │   └── API-specific configuration files (e.g., Swagger, Middleware).
+│   ├── Controllers
+│   │   └── API controllers that handle HTTP requests and responses.
+│   ├── DTOs
+│   │   └── Data Transfer Objects that define the structure of data sent and received via API endpoints.
+│   └── Models
+│       └── View Models specific to API, if needed (separate from domain entities).
+│
+├── InventoryManagementSystem.Application
+│   ├── Mappers
+│   │   └── Mapping profiles (e.g., AutoMapper profiles) that map between entities and DTOs.
+│   ├── Services
+│   │   └── Application services that contain business logic and orchestrate domain operations.
+│   ├── Interfaces
+│   │   └── Interfaces for application services (e.g., IUserService).
+│   ├── UseCases
+│   │   └── Classes that represent specific business use cases (e.g., adding a user).
+│   └── Validators
+│       └── Validation classes for DTOs using FluentValidation or custom validation logic.
+│
+├── InventoryManagementSystem.Core
+│   ├── Configuration
+│   │   └── Core configuration settings (e.g., constants, shared configuration classes).
+│   ├── Entities
+│   │   └── Domain entities that represent the core data models of the application (e.g., User, Product).
+│   ├── Exceptions
+│   │   └── Custom exception classes related to domain logic (e.g., Domain-specific exceptions).
+│   ├── Interfaces
+│   │   └── Core interfaces (e.g., repository interfaces like IUserRepository, domain service interfaces).
+│   └── Specifications
+│       └── Specification pattern classes that define query criteria for domain entities.
+│
+└── InventoryManagementSystem.Infrastructure
+    ├── Context
+    │   └── Database context classes (e.g., DapperContext for managing database connections).
+    ├── Data
+    │   └── Repository implementations that fulfill core interface contracts (e.g., UserRepository).
+    ├── Extensions
+    │   └── Extension methods for infrastructure-related functionalities (e.g., service registration).
+    └── Services
+        └── Infrastructure services implementations (e.g., logging, third-party integrations).
+
+
+
+
+Brief Description of Each Folder
+API Project (InventoryManagementSystem.API):
+
+Configuration: Handles configuration files specific to the API layer, like middleware settings, routing, or Swagger setup.
+Controllers: Contains the API controllers that manage endpoints, handle incoming requests, and return responses.
+DTOs: Data Transfer Objects define the contract for the API, specifying the structure of the data sent and received.
+Models: API-specific models, typically used for input/output representations distinct from domain models.
+Application Project (InventoryManagementSystem.Application):
+
+Mappers: Defines mapping logic to convert between entities and DTOs, usually leveraging libraries like AutoMapper.
+Services: Contains business logic that handles the application’s operations and interacts with the domain entities.
+Interfaces: Defines contracts for application services, facilitating dependency injection and abstraction of business logic.
+UseCases: Represents the specific business use cases of the application, encapsulating business rules and workflows.
+Validators: Validation logic for incoming data (DTOs), ensuring correctness before processing business rules.
+Core Project (InventoryManagementSystem.Core):
+
+Configuration: Core configuration classes that define settings used across the domain, like constants or shared configuration data.
+Entities: Domain entities representing the core business models (e.g., User, Product), reflecting the structure of data in your domain.
+Exceptions: Custom exceptions related to the domain logic, enabling specific error handling and control flow.
+Interfaces: Core interfaces, such as repository contracts or domain services, abstracting the implementation details of the domain layer.
+Specifications: Implements the specification pattern, defining complex query logic or business rules that can be applied to entities.
+Infrastructure Project (InventoryManagementSystem.Infrastructure):
+
+Context: Manages database context classes, responsible for connecting to the database (e.g., through Dapper).
+Data: Contains the implementations of repositories defined in the Core, interacting directly with the database.
+Extensions: Provides extension methods that simplify infrastructure tasks, like registering services in the dependency injection container.
+Services: Infrastructure-related service implementations, such as file storage, logging, or external API calls.

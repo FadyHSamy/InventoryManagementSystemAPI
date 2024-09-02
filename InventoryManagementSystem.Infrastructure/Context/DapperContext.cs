@@ -1,4 +1,4 @@
-﻿using InventoryManagementSystem.API.Configurations;
+﻿using InventoryManagementSystem.Infrastructure.Configuration;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;

@@ -3,15 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35004.147
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventoryManagementSystem.API", "InventoryManagementSystem.API\InventoryManagementSystem.API.csproj", "{24FB11BC-50DA-4E5F-9120-EBEAF33439AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InventoryManagementSystem.API", "InventoryManagementSystem.API\InventoryManagementSystem.API.csproj", "{24FB11BC-50DA-4E5F-9120-EBEAF33439AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventoryManagementSystem.Core", "InventoryManagementSystem.Core\InventoryManagementSystem.Core.csproj", "{C0D8AE15-6045-48E6-9DFD-873ACBDB6B1C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InventoryManagementSystem.Core", "InventoryManagementSystem.Core\InventoryManagementSystem.Core.csproj", "{C0D8AE15-6045-48E6-9DFD-873ACBDB6B1C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventoryManagementSystem.Infrastructure", "InventoryManagementSystem.Infrastructure\InventoryManagementSystem.Infrastructure.csproj", "{7A0BB3C9-3A6B-41B5-B16A-88B9C79EDB6F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InventoryManagementSystem.Infrastructure", "InventoryManagementSystem.Infrastructure\InventoryManagementSystem.Infrastructure.csproj", "{7A0BB3C9-3A6B-41B5-B16A-88B9C79EDB6F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventoryManagementSystem.Application", "InventoryManagementSystem.Application\InventoryManagementSystem.Application.csproj", "{03A55526-F229-4F9E-B829-D98B14BB09C0}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventoryManagementSystem.Tests", "InventoryManagementSystem.Tests\InventoryManagementSystem.Tests.csproj", "{ACCB3730-6048-4212-A7E3-7D666FE04EDA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InventoryManagementSystem.Tests", "InventoryManagementSystem.Tests\InventoryManagementSystem.Tests.csproj", "{ACCB3730-6048-4212-A7E3-7D666FE04EDA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,10 +29,6 @@ Global
 		{7A0BB3C9-3A6B-41B5-B16A-88B9C79EDB6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A0BB3C9-3A6B-41B5-B16A-88B9C79EDB6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A0BB3C9-3A6B-41B5-B16A-88B9C79EDB6F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{03A55526-F229-4F9E-B829-D98B14BB09C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{03A55526-F229-4F9E-B829-D98B14BB09C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{03A55526-F229-4F9E-B829-D98B14BB09C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{03A55526-F229-4F9E-B829-D98B14BB09C0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{ACCB3730-6048-4212-A7E3-7D666FE04EDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{ACCB3730-6048-4212-A7E3-7D666FE04EDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ACCB3730-6048-4212-A7E3-7D666FE04EDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
