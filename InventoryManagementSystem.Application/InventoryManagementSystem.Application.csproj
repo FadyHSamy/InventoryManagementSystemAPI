@@ -8,9 +8,10 @@
 
   <ItemGroup>
     <Folder Include="Mappers\" />
+    <Folder Include="Mappers\" />
+    <Folder Include="Services\" />
     <Folder Include="UseCases\" />
     <Folder Include="Validators\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
   <ItemGroup>
