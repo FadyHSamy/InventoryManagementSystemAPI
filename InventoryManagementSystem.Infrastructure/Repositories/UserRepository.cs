@@ -1,10 +1,10 @@
 ﻿using Dapper;
-using InventoryManagementSystem.Core.Entities;
+using InventoryManagementSystem.Core.Entities.Shared;
 using InventoryManagementSystem.Core.Entities.User;
-using InventoryManagementSystem.Core.Interfaces;
+using InventoryManagementSystem.Core.Interfaces.Repositories;
 using InventoryManagementSystem.Infrastructure.Context;
+using Microsoft.Data.SqlClient;
 using System.Data;
-using System.Threading.Tasks;
 
 namespace InventoryManagementSystem.Infrastructure.Repositories
 {
@@ -17,9 +17,29 @@ namespace InventoryManagementSystem.Infrastructure.Repositories
             _dapperContext = dapperContext;
         }
 
-        public async Task AddAsync(User user)
+        public async Task<ResultStatus> AddAsync(User user)
         {
-            
+            try
+            {
+                var storedProcedure = "[usr].[AddingUser]";
+                using (var connection = _dapperContext.CreateConnection())
+                {
+                    DynamicParameters parameters = new DynamicParameters();
+                    parameters.Add("Username", user.Username, dbType: DbType.String);
+                    parameters.Add("HashedPassword", user.PasswordHash, dbType: DbType.String);
+                    parameters.Add("MobileNumber", user.MobileNumber, dbType: DbType.String);
+                    parameters.Add("Email", user.Email, dbType: DbType.String);
+
+                    //Execute stored procedure and map the returned result to a Customer object  
+                    connection.ExecuteAsync(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
+                    _dapperContext.DisposeConnection(connection);
+                }
+                return ResultStatus.Successfuly();
+            }
+            catch (Exception ex)
+            {
+                return ResultStatus.Failure(ex.Message);
+            }
         }
     }
 }

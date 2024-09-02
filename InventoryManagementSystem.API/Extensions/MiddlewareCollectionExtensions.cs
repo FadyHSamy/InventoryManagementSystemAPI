@@ -1,14 +1,4 @@
-﻿using InventoryManagementSystem.Core.Interfaces;
-using InventoryManagementSystem.Infrastructure.Context;
-using InventoryManagementSystem.Infrastructure.Repositories;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace InventoryManagementSystem.API.Extensions
+﻿namespace InventoryManagementSystem.API.Extensions
 {
     public static class MiddlewareCollectionExtensions
     {

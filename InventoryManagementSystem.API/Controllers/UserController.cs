@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using InventoryManagementSystem.Core.DTOs.User;
 using InventoryManagementSystem.Core.Interfaces.Services;
-using InventoryManagementSystem.Core.DTOs.User;
+using Microsoft.AspNetCore.Mvc;
 
 namespace InventoryManagementSystem.API.Controllers
 {

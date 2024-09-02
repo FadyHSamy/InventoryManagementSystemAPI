@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using InventoryManagementSystem.Core.Entities.User;
-using InventoryManagementSystem.Core.Interfaces.Services;
-using InventoryManagementSystem.Core.Entities.Shared;
 using InventoryManagementSystem.Core.DTOs.User;
+using InventoryManagementSystem.Core.Entities.Shared;
+using InventoryManagementSystem.Core.Entities.User;
 using InventoryManagementSystem.Core.Interfaces.Repositories;
+using InventoryManagementSystem.Core.Interfaces.Services;
 
 namespace InventoryManagementSystem.Core.Services
 {
