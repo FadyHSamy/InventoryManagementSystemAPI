@@ -1,5 +1,6 @@
 
 using InventoryManagementSystem.API.Extensions;
+using InventoryManagementSystem.API.Middlewares;
 using InventoryManagementSystem.Core.Mappers;
 using InventoryManagementSystem.Infrastructure.Configuration;
 
@@ -10,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
 builder.Services.AddCustomRepository();
 builder.Services.AddCustomServices();
-builder.Services.AddAutoMapper(typeof(UserProfile));
+
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -29,7 +30,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-//app.UseMiddleware();
+app.AddCustomMiddleware();
 
 app.MapControllers();
 

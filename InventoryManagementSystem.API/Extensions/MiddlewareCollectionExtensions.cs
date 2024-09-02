@@ -1,14 +1,13 @@
-﻿namespace InventoryManagementSystem.API.Extensions
+﻿using InventoryManagementSystem.API.Middlewares;
+
+namespace InventoryManagementSystem.API.Extensions
 {
     public static class MiddlewareCollectionExtensions
     {
-        public static void AddCustomMiddleware(this IServiceCollection services)
+        public static void AddCustomMiddleware(this IApplicationBuilder app)
         {
-            // Register your services here
-            //services.AddScoped<IUserRepository, UserRepository>();
-
-            // Register DapperContext
-            //services.AddScoped<DapperContext>();
+            app.UseMiddleware<CustomMiddleware>();
+            app.UseMiddleware<ResponseWrapper>();
 
         }
     }

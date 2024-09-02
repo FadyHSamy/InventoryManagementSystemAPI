@@ -1,4 +1,5 @@
 ﻿using InventoryManagementSystem.Core.Interfaces.Services;
+using InventoryManagementSystem.Core.Mappers;
 using InventoryManagementSystem.Core.Services;
 using InventoryManagementSystem.Infrastructure.Context;
 
@@ -13,6 +14,8 @@ namespace InventoryManagementSystem.API.Extensions
 
             // Register DapperContext
             services.AddScoped<DapperContext>();
+
+            services.AddAutoMapper(typeof(UserProfile));
 
         }
     }
