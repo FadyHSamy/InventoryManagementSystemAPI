@@ -17,7 +17,7 @@ namespace InventoryManagementSystem.Infrastructure.Repositories
             _dapperContext = dapperContext;
         }
 
-        public async Task<ResultStatus> AddAsync(User user)
+        public async Task AddAsync(User user)
         {
             try
             {
@@ -31,14 +31,13 @@ namespace InventoryManagementSystem.Infrastructure.Repositories
                     parameters.Add("Email", user.Email, dbType: DbType.String);
 
                     //Execute stored procedure and map the returned result to a Customer object  
-                    connection.ExecuteAsync(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
+                    await connection.ExecuteAsync(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
                     _dapperContext.DisposeConnection(connection);
                 }
-                return ResultStatus.Successfuly();
             }
             catch (Exception ex)
             {
-                return ResultStatus.Failure(ex.Message);
+                throw;
             }
         }
     }

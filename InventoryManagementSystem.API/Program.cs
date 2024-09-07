@@ -3,12 +3,13 @@ using InventoryManagementSystem.API.Extensions;
 using InventoryManagementSystem.API.Middlewares;
 using InventoryManagementSystem.Core.Mappers;
 using InventoryManagementSystem.Infrastructure.Configuration;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
+builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DefaultConnection"));
 builder.Services.AddCustomRepository();
 builder.Services.AddCustomServices();
 

@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace InventoryManagementSystem.Core.Entities.Shared
 {
-    public class ResultStatus
+    public class HttpResponseStatus
     {
         public bool Success { get; private set; }
         public string Message { get; private set; }
 
-        private ResultStatus(bool isSuccess, string message = null)
+        private HttpResponseStatus(bool isSuccess, string message = null)
         {
             Success = isSuccess;
             Message = message;
         }
 
-        public static ResultStatus Successfuly() => new ResultStatus(true);
-        public static ResultStatus Failure(string message) => new ResultStatus(false, message);
+        public static HttpResponseStatus Successfully() => new HttpResponseStatus(true);
+        public static HttpResponseStatus Failure(string message) => new HttpResponseStatus(false, message);
     }
 }

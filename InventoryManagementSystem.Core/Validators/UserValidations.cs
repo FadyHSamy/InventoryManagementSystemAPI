@@ -1,7 +1,9 @@
-﻿using System;
+﻿using InventoryManagementSystem.Core.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -22,22 +24,24 @@ namespace InventoryManagementSystem.Core.Validators
             protected override ValidationResult IsValid(object value, ValidationContext validationContext)
             {
                 var username = value as string;
+                if (username is not string)
+                {
+                    return new ValidationResult("Username must be a string.");
+                }
 
-                // If not required and no value provided, it's valid.
                 if (!_required && string.IsNullOrWhiteSpace(username))
                 {
                     return ValidationResult.Success;
                 }
 
-                // If required but no value provided, it's invalid.
                 if (string.IsNullOrWhiteSpace(username))
                 {
-                    return new ValidationResult("Username is required.");
+                    throw new ValidationCustomException("Username is required.");
                 }
 
                 if (username.Length < 3 || username.Length > 20)
                 {
-                    return new ValidationResult("Username must be between 3 and 20 characters.");
+                    throw new ValidationCustomException("Username must be between 3 and 20 characters.");
                 }
 
                 return ValidationResult.Success;
@@ -66,12 +70,12 @@ namespace InventoryManagementSystem.Core.Validators
                 // If required but no value provided, it's invalid.
                 if (string.IsNullOrWhiteSpace(password))
                 {
-                    return new ValidationResult("Password is required.");
+                    throw new ValidationCustomException("Password is required.");
                 }
 
                 if (password.Length < 8)
                 {
-                    return new ValidationResult("Password must be at least 8 characters long.");
+                    throw new ValidationCustomException("Password must be at least 8 characters long.");
                 }
 
                 return ValidationResult.Success;
@@ -101,13 +105,13 @@ namespace InventoryManagementSystem.Core.Validators
                 // If required but no value provided, it's invalid.
                 if (string.IsNullOrWhiteSpace(mobileNumber))
                 {
-                    return new ValidationResult("Mobile number is required.");
+                    throw new ValidationCustomException("Mobile number is required.");
                 }
 
                 // Validate against the regex for Egyptian mobile numbers.
                 if (!_egyptRegex.IsMatch(mobileNumber))
                 {
-                    return new ValidationResult("Invalid mobile number format.");
+                    throw new ValidationCustomException("Invalid mobile number format.");
                 }
 
                 return ValidationResult.Success;
@@ -129,13 +133,13 @@ namespace InventoryManagementSystem.Core.Validators
 
                 if (string.IsNullOrWhiteSpace(email))
                 {
-                    return new ValidationResult("Email is required.");
+                    throw new ValidationCustomException("Email is required.");
                 }
 
                 var emailAttribute = new EmailAddressAttribute();
                 if (!emailAttribute.IsValid(email))
                 {
-                    return new ValidationResult("Invalid email address.");
+                    throw new ValidationCustomException("Invalid email address.");
                 }
 
                 return ValidationResult.Success;

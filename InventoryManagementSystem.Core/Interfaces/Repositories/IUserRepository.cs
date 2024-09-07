@@ -7,7 +7,6 @@ namespace InventoryManagementSystem.Core.Interfaces.Repositories
 {
     public interface IUserRepository
     {
-        Task<ResultStatus> AddAsync(User user);
-        // Additional methods like Get, Update, Delete can be included here
+        Task AddAsync(User user);
     }
 }

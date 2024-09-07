@@ -1,7 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
+using InventoryManagementSystem.Core.Entities.Shared;
 using InventoryManagementSystem.Core.Exceptions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace InventoryManagementSystem.API.Middlewares
 {
@@ -20,45 +25,39 @@ namespace InventoryManagementSystem.API.Middlewares
             {
                 await _next(context);
             }
-            catch (AppException ex)
+            catch (ValidationCustomException ex)
             {
-                await HandleAppExceptionAsync(context, ex);
+                await HandleValidationExceptionAsync(context, ex);
+            }
+            catch (DatabaseException ex)
+            {
+                await HandleDatabaseExceptionAsync(context, ex);
             }
             catch (Exception ex)
             {
                 await HandleGeneralExceptionAsync(context, ex);
             }
         }
-
-        private Task HandleAppExceptionAsync(HttpContext context, AppException ex)
-        {
-            context.Response.ContentType = "application/json";
-            if (ex.ErrorType == "Validation")
-            {
-                context.Response.StatusCode = StatusCodes.Status400BadRequest;
-            }
-            else if (ex.ErrorType == "NotFound")
-            {
-                context.Response.StatusCode = StatusCodes.Status404NotFound;
-            }
-            else if (ex.ErrorType == "Unauthorized")
-            {
-                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-            }
-            else
-            {
-                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            }
-            var response = new { message = ex.Message };
-            return context.Response.WriteAsJsonAsync(response);
-        }
-
         private Task HandleGeneralExceptionAsync(HttpContext context, Exception ex)
         {
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             var response = new { message = "An unexpected error occurred." };
-            return context.Response.WriteAsJsonAsync(response);
+            return context.Response.WriteAsJsonAsync(response.message);
         }
+
+        private Task HandleValidationExceptionAsync(HttpContext context, ValidationCustomException exception)
+        {
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            return context.Response.WriteAsJsonAsync(exception.Message);
+        }
+        private Task HandleDatabaseExceptionAsync(HttpContext context, DatabaseException exception)
+        {
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            return context.Response.WriteAsJsonAsync(exception.Message);
+        }
+
     }
 }

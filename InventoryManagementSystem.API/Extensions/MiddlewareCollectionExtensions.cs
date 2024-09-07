@@ -6,9 +6,8 @@ namespace InventoryManagementSystem.API.Extensions
     {
         public static void AddCustomMiddleware(this IApplicationBuilder app)
         {
-            app.UseMiddleware<CustomMiddleware>();
             app.UseMiddleware<ResponseWrapper>();
-
+            app.UseMiddleware<CustomMiddleware>();
         }
     }
 }

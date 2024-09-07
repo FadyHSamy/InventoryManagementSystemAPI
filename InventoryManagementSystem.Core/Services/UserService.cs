@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BCrypt.Net;
 using InventoryManagementSystem.Core.DTOs.User;
 using InventoryManagementSystem.Core.Entities.Shared;
 using InventoryManagementSystem.Core.Entities.User;
@@ -18,19 +19,18 @@ namespace InventoryManagementSystem.Core.Services
             _mapper = mapper;
         }
 
-        public async Task<ResultStatus> AddUserAsync(AddingUserDto addUserDto)
+        public async Task AddUserAsync(AddingUserDto addUserDto)
         {
             var user = _mapper.Map<User>(addUserDto);
             // Hash the password and other logic here
             user.PasswordHash = HashPassword(addUserDto.PlainPassword);
             await _userRepository.AddAsync(user);
-            return ResultStatus.Successfuly();
         }
 
-        private string HashPassword(string plainPassword)
+        public string HashPassword(string plainPassword)
         {
-            return "";
-            // Hashing logic here
+            var passwordHash = BCrypt.Net.BCrypt.HashPassword(plainPassword);
+            return passwordHash;
         }
     }
 }

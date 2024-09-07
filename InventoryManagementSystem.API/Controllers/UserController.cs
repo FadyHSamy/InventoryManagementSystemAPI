@@ -18,12 +18,15 @@ namespace InventoryManagementSystem.API.Controllers
         [HttpPost("add")]
         public async Task<IActionResult> AddUser([FromBody] AddingUserDto addUserDto)
         {
-            var result = await _userService.AddUserAsync(addUserDto);
-            if (result.Success)
+            try
             {
+                await _userService.AddUserAsync(addUserDto);
                 return Ok();
             }
-            return BadRequest(result.Message);
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

@@ -9,22 +9,21 @@ namespace InventoryManagementSystem.Core.Entities.Shared
 {
     public class ApiWrapperResponse
     {
-        public static ApiWrapperResponse Create(HttpStatusCode statusCode, object result = null, string errorMessage = null)
+        public bool Success { get; set; }
+
+        public object Result { get; set; }
+
+        public string ErrorMessage { get; set; }
+
+
+        public static ApiWrapperResponse CreateResponseObject(HttpStatusCode statusCode, object result = null, string errorMessage = null)
         {
             return new ApiWrapperResponse(statusCode, result, errorMessage);
         }
 
-        public int StatusCode { get; set; }
-        public string RequestId { get; }
-
-        public string ErrorMessage { get; set; }
-
-        public object Result { get; set; }
-
         protected ApiWrapperResponse(HttpStatusCode statusCode, object result = null, string errorMessage = null)
         {
-            RequestId = Guid.NewGuid().ToString();
-            StatusCode = (int)statusCode;
+            Success = (int)statusCode == 200 ? true : false;
             Result = result;
             ErrorMessage = errorMessage;
         }
