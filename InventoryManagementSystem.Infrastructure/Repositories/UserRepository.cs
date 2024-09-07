@@ -30,13 +30,14 @@ namespace InventoryManagementSystem.Infrastructure.Repositories
                     parameters.Add("MobileNumber", user.MobileNumber, dbType: DbType.String);
                     parameters.Add("Email", user.Email, dbType: DbType.String);
 
-                    //Execute stored procedure and map the returned result to a Customer object  
                     await connection.ExecuteAsync(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
-                    _dapperContext.DisposeConnection(connection);
+                    _dapperContext.Dispose();
                 }
+                ApiWrapperResponse.Successfully("User Created Successfully");
             }
             catch (Exception ex)
             {
+                ApiWrapperResponse.Failure(ex.Message);
                 throw;
             }
         }

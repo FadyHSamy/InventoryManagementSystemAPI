@@ -9,12 +9,12 @@ namespace InventoryManagementSystem.Core.Entities.Shared
 {
     public class ApiWrapperResponse
     {
-        public bool Success { get; set; }
+        public bool Success { get; private set; }
+        public object Result { get; private set; }
+        public string ErrorMessage { get; private set; }
 
-        public object Result { get; set; }
-
-        public string ErrorMessage { get; set; }
-
+        public static ApiWrapperResponse Successfully(object result = null) => new ApiWrapperResponse(HttpStatusCode.OK, result, null);
+        public static ApiWrapperResponse Failure(string message) => new ApiWrapperResponse(HttpStatusCode.BadRequest, null, message);
 
         public static ApiWrapperResponse CreateResponseObject(HttpStatusCode statusCode, object result = null, string errorMessage = null)
         {
@@ -23,9 +23,9 @@ namespace InventoryManagementSystem.Core.Entities.Shared
 
         protected ApiWrapperResponse(HttpStatusCode statusCode, object result = null, string errorMessage = null)
         {
-            Success = (int)statusCode == 200 ? true : false;
-            Result = result;
-            ErrorMessage = errorMessage;
+            Success = statusCode == HttpStatusCode.OK;
+            Result = Success ? result : null;
+            ErrorMessage = Success ? null : errorMessage;
         }
     }
 }

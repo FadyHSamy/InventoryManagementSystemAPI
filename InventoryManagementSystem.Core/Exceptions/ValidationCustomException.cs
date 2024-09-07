@@ -22,6 +22,5 @@ namespace InventoryManagementSystem.Core.Exceptions
             : base(message, innerException)
         {
         }
-        public override string Message => base.Message; 
     }
 }

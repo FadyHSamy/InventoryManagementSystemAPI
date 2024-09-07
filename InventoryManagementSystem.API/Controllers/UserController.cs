@@ -25,7 +25,7 @@ namespace InventoryManagementSystem.API.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                throw ex;
             }
         }
     }

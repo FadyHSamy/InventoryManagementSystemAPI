@@ -24,10 +24,6 @@ namespace InventoryManagementSystem.Core.Validators
             protected override ValidationResult IsValid(object value, ValidationContext validationContext)
             {
                 var username = value as string;
-                if (username is not string)
-                {
-                    return new ValidationResult("Username must be a string.");
-                }
 
                 if (!_required && string.IsNullOrWhiteSpace(username))
                 {

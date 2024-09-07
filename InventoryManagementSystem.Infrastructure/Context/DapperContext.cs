@@ -11,23 +11,42 @@ using System.Threading.Tasks;
 
 namespace InventoryManagementSystem.Infrastructure.Context
 {
-    public class DapperContext
+    public interface IDapperContext
     {
-        private readonly IConfiguration _configuration;
+        IDbConnection CreateConnection();
+    }
+    public class DapperContext : IDapperContext, IDisposable
+    {
         private readonly string _connectionString;
+        private IDbConnection _connection;
+
         public DapperContext(IOptions<DatabaseSettings> dbSettings)
         {
-            _connectionString = dbSettings.Value.DefaultConnection;
+            _connectionString = dbSettings?.Value?.DefaultConnection ?? throw new ArgumentNullException(nameof(dbSettings));
         }
-        public IDbConnection CreateConnection() => new SqlConnection(_connectionString);
 
-        // Optionally, implement a method to close the connection if needed
-        public void DisposeConnection(IDbConnection connection)
+        public IDbConnection CreateConnection()
         {
-            if (connection != null && connection.State != ConnectionState.Closed)
+            _connection = new SqlConnection(_connectionString);
+            _connection.Open();
+            return _connection;
+        }
+
+        // Properly manage the connection lifecycle
+        public void Dispose()
+        {
+            DisposeConnection();
+            GC.SuppressFinalize(this);
+        }
+
+        // Method to close and dispose of the connection
+        private void DisposeConnection()
+        {
+            if (_connection != null && _connection.State != ConnectionState.Closed)
             {
-                connection.Close();
-                connection.Dispose();
+                _connection.Close();
+                _connection.Dispose();
+                _connection = null; // Set to null after disposal
             }
         }
     }

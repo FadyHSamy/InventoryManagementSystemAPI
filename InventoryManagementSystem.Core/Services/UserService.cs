@@ -22,7 +22,6 @@ namespace InventoryManagementSystem.Core.Services
         public async Task AddUserAsync(AddingUserDto addUserDto)
         {
             var user = _mapper.Map<User>(addUserDto);
-            // Hash the password and other logic here
             user.PasswordHash = HashPassword(addUserDto.PlainPassword);
             await _userRepository.AddAsync(user);
         }

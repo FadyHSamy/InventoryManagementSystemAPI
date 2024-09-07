@@ -42,8 +42,9 @@ namespace InventoryManagementSystem.API.Middlewares
         {
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            var response = new { message = "An unexpected error occurred." };
-            return context.Response.WriteAsJsonAsync(response.message);
+            var response = string.IsNullOrEmpty(ex.Message) ? "An unexpected error occurred." : ex.Message;
+
+            return context.Response.WriteAsJsonAsync(response);
         }
 
         private Task HandleValidationExceptionAsync(HttpContext context, ValidationCustomException exception)

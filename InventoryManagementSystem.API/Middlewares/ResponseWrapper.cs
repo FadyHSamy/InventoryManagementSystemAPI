@@ -2,7 +2,6 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Diagnostics;
 using System.Net;
 
 namespace InventoryManagementSystem.API.Middlewares
@@ -29,15 +28,13 @@ namespace InventoryManagementSystem.API.Middlewares
                     await _next(context); // Invoke the next middleware in the pipeline.
 
                     memoryStream.Seek(0, SeekOrigin.Begin);
-                    string responseBody = await new StreamReader(memoryStream).ReadToEndAsync();
+                    object responseBody = await new StreamReader(memoryStream).ReadToEndAsync();
+                    var statusCode = (HttpStatusCode)context.Response.StatusCode;
                     context.Response.Body = originalBodyStream;
 
-                    object objResult = HandlingResponseBody(responseBody);
-                    
-                    var statusCode = (HttpStatusCode)context.Response.StatusCode;
                     var result = (statusCode == HttpStatusCode.OK)
-                        ? ApiWrapperResponse.CreateResponseObject(statusCode, objResult, null)
-                        : ApiWrapperResponse.CreateResponseObject(statusCode, null, objResult.ToString());
+                        ? ApiWrapperResponse.CreateResponseObject(statusCode, responseBody, null)
+                        : ApiWrapperResponse.CreateResponseObject(statusCode, null, CleanErrorMessage(responseBody.ToString()));
 
                     context.Response.ContentType = "application/json";
                     await context.Response.WriteAsync(JsonConvert.SerializeObject(result));
@@ -54,42 +51,9 @@ namespace InventoryManagementSystem.API.Middlewares
                 }
             }
         }
-        private object HandlingResponseBody(string stri)
+        public static string CleanErrorMessage(string message)
         {
-            if (IsValidJson(stri))
-            {
-                return JsonConvert.DeserializeObject(stri);
-            }
-            return stri;
-        }
-        private static bool IsValidJson(string strInput)
-        {
-            if (string.IsNullOrWhiteSpace(strInput)) { return false; }
-            strInput = strInput.Trim();
-            if ((strInput.StartsWith("{") && strInput.EndsWith("}")) || //For object
-                (strInput.StartsWith("[") && strInput.EndsWith("]"))) //For array
-            {
-                try
-                {
-                    var obj = JToken.Parse(strInput);
-                    return true;
-                }
-                catch (JsonReaderException jex)
-                {
-                    //Exception in parsing json
-                    Console.WriteLine(jex.Message);
-                    return false;
-                }
-                catch (Exception ex) //some other exception
-                {
-                    Console.WriteLine(ex.ToString());
-                    return false;
-                }
-            }
-            else
-            {
-                return false;
-            }
+            return message.Replace("\\\"", "\"").Trim('"');
         }
     }
 }

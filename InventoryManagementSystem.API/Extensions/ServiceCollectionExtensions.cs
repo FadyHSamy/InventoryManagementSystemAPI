@@ -12,7 +12,6 @@ namespace InventoryManagementSystem.API.Extensions
             // Register your services here
             services.AddScoped<IUserService, UserService>();
 
-            // Register DapperContext
             services.AddScoped<DapperContext>();
 
             services.AddAutoMapper(typeof(UserProfile));
