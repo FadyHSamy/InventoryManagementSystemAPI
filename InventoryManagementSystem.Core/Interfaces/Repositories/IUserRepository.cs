@@ -7,6 +7,7 @@ namespace InventoryManagementSystem.Core.Interfaces.Repositories
 {
     public interface IUserRepository
     {
-        Task AddAsync(User user);
+        Task AddUser(User user);
+        Task<User> GetUserInformation(string Username);
     }
 }

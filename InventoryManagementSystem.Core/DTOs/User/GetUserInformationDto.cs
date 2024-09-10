@@ -4,17 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace InventoryManagementSystem.Core.Entities.User
+namespace InventoryManagementSystem.Core.DTOs.User
 {
-    public class User
+    public class GetUserInformationDto
     {
         public string Username { get; set; }
-        public string PasswordHash { get; set; }
         public DateTime CreatedAt { get; set; }
-        public int StatusId { get; set; }
         public DateTime LoginSuccessfully { get; set; }
         public string MobileNumber { get; set; }
         public string Email { get; set; }
-        public int RoleId { get; set; }
+        public string StatusDescripton { get; set; }
+        public string RoleName { get; set; }
     }
 }

@@ -1,10 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Azure.Core;
 using InventoryManagementSystem.Core.Entities.Shared;
 using InventoryManagementSystem.Core.Exceptions;
+using InventoryManagementSystem.Core.Utilities.Helpers;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -27,37 +31,53 @@ namespace InventoryManagementSystem.API.Middlewares
             }
             catch (ValidationCustomException ex)
             {
-                await HandleValidationExceptionAsync(context, ex);
+                await ValidationException(context, ex);
             }
             catch (DatabaseException ex)
             {
-                await HandleDatabaseExceptionAsync(context, ex);
+                await DatabaseException(context, ex);
+            }
+            catch (NotFoundException ex)
+            {
+                await NotFoundException(context, ex);
             }
             catch (Exception ex)
             {
-                await HandleGeneralExceptionAsync(context, ex);
+                await GeneralException(context, ex);
             }
         }
-        private Task HandleGeneralExceptionAsync(HttpContext context, Exception ex)
-        {
-            context.Response.ContentType = "application/json";
-            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            var response = string.IsNullOrEmpty(ex.Message) ? "An unexpected error occurred." : ex.Message;
 
-            return context.Response.WriteAsJsonAsync(response);
-        }
-
-        private Task HandleValidationExceptionAsync(HttpContext context, ValidationCustomException exception)
+        public Task GeneralException(HttpContext context, Exception exception)
         {
+            HttpStatusCode StatusCode = HttpStatusCode.InternalServerError;
+            context.Response.StatusCode = (int)StatusCode;
             context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            return context.Response.WriteAsJsonAsync(exception.Message);
+            var response = ApiResponseHelper.Failure<object>(context.Request, "An unhandled exception occurred.");
+            return context.Response.WriteAsync(JsonConvert.SerializeObject(response));
         }
-        private Task HandleDatabaseExceptionAsync(HttpContext context, DatabaseException exception)
+        private Task ValidationException(HttpContext context, ValidationCustomException exception)
         {
+            HttpStatusCode StatusCode = HttpStatusCode.Forbidden;
+            context.Response.StatusCode = (int)StatusCode;
             context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            return context.Response.WriteAsJsonAsync(exception.Message);
+            var response = ApiResponseHelper.Failure<object>(context.Request, exception.Message);
+            return context.Response.WriteAsync(JsonConvert.SerializeObject(response));
+        }
+        private Task DatabaseException(HttpContext context, DatabaseException exception)
+        {
+            HttpStatusCode StatusCode = HttpStatusCode.InternalServerError;
+            context.Response.StatusCode = (int)StatusCode;
+            context.Response.ContentType = "application/json";
+            var response = ApiResponseHelper.Failure<object>(context.Request, exception.Message);
+            return context.Response.WriteAsync(JsonConvert.SerializeObject(response));
+        }
+        private Task NotFoundException(HttpContext context, NotFoundException exception)
+        {
+            HttpStatusCode StatusCode = HttpStatusCode.NotFound;
+            context.Response.StatusCode = (int)StatusCode;
+            context.Response.ContentType = "application/json";
+            var response = ApiResponseHelper.Failure<object>(context.Request, exception.Message);
+            return context.Response.WriteAsync(JsonConvert.SerializeObject(response));
         }
 
     }

@@ -5,6 +5,7 @@ namespace InventoryManagementSystem.Core.Interfaces.Services
 {
     public interface IUserService
     {
-        Task AddUserAsync(AddingUserDto addUserDto);
+        Task AddUser(AddingUserDto addUserDto);
+        Task<GetUserInformationDto> GetUserInformation(string Username);
     }
 }

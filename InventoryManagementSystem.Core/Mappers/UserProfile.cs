@@ -12,6 +12,8 @@ namespace InventoryManagementSystem.Core.Mappers
         {
             CreateMap<AddingUserDto, User>()
                 .ForMember(dest => dest.PasswordHash, opt => opt.Ignore()); // Hashing will be handled separately
+            CreateMap<GetUserInformationDto, User>()
+                .ReverseMap();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using InventoryManagementSystem.Core.Entities.Shared;
 using InventoryManagementSystem.Core.Entities.User;
+using InventoryManagementSystem.Core.Exceptions;
 using InventoryManagementSystem.Core.Interfaces.Repositories;
 using InventoryManagementSystem.Infrastructure.Context;
 using Microsoft.Data.SqlClient;
@@ -17,7 +18,7 @@ namespace InventoryManagementSystem.Infrastructure.Repositories
             _dapperContext = dapperContext;
         }
 
-        public async Task AddAsync(User user)
+        public async Task AddUser(User user)
         {
             try
             {
@@ -33,12 +34,30 @@ namespace InventoryManagementSystem.Infrastructure.Repositories
                     await connection.ExecuteAsync(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
                     _dapperContext.Dispose();
                 }
-                ApiWrapperResponse.Successfully("User Created Successfully");
             }
             catch (Exception ex)
             {
-                ApiWrapperResponse.Failure(ex.Message);
                 throw;
+            }
+        }
+        public async Task<User> GetUserInformation(string Username)
+        {
+            try
+            {
+                var storedProcedure = "[usr].[GetUserInformationByUsername]";
+                using (var connection = _dapperContext.CreateConnection())
+                {
+                    DynamicParameters parameters = new DynamicParameters();
+                    parameters.Add("Username", Username, dbType: DbType.String);
+
+                    User UserInformation = await connection.QueryFirstOrDefaultAsync<User>(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
+                    _dapperContext.Dispose();
+                    return UserInformation;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new DatabaseException("Error While Fetching user information.",ex);
             }
         }
     }
