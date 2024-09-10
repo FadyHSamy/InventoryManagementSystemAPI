@@ -31,7 +31,7 @@ namespace InventoryManagementSystem.API.Controllers
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
             }
         }
         [HttpGet("GetUserInformation")]

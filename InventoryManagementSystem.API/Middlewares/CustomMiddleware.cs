@@ -52,7 +52,7 @@ namespace InventoryManagementSystem.API.Middlewares
             HttpStatusCode StatusCode = HttpStatusCode.InternalServerError;
             context.Response.StatusCode = (int)StatusCode;
             context.Response.ContentType = "application/json";
-            var response = ApiResponseHelper.Failure<object>(context.Request, "An unhandled exception occurred.");
+            ApiResponse<object> response = ApiResponseHelper.Failure<object>(context.Request, "An unhandled exception occurred.");
             return context.Response.WriteAsync(JsonConvert.SerializeObject(response));
         }
         private Task ValidationException(HttpContext context, ValidationCustomException exception)
@@ -60,7 +60,7 @@ namespace InventoryManagementSystem.API.Middlewares
             HttpStatusCode StatusCode = HttpStatusCode.Forbidden;
             context.Response.StatusCode = (int)StatusCode;
             context.Response.ContentType = "application/json";
-            var response = ApiResponseHelper.Failure<object>(context.Request, exception.Message);
+            ApiResponse<object> response = ApiResponseHelper.Failure<object>(context.Request, exception.Message);
             return context.Response.WriteAsync(JsonConvert.SerializeObject(response));
         }
         private Task DatabaseException(HttpContext context, DatabaseException exception)
@@ -68,7 +68,7 @@ namespace InventoryManagementSystem.API.Middlewares
             HttpStatusCode StatusCode = HttpStatusCode.InternalServerError;
             context.Response.StatusCode = (int)StatusCode;
             context.Response.ContentType = "application/json";
-            var response = ApiResponseHelper.Failure<object>(context.Request, exception.Message);
+            ApiResponse<object> response = ApiResponseHelper.Failure<object>(context.Request, exception.Message);
             return context.Response.WriteAsync(JsonConvert.SerializeObject(response));
         }
         private Task NotFoundException(HttpContext context, NotFoundException exception)
@@ -76,7 +76,7 @@ namespace InventoryManagementSystem.API.Middlewares
             HttpStatusCode StatusCode = HttpStatusCode.NotFound;
             context.Response.StatusCode = (int)StatusCode;
             context.Response.ContentType = "application/json";
-            var response = ApiResponseHelper.Failure<object>(context.Request, exception.Message);
+            ApiResponse<object> response = ApiResponseHelper.Failure<object>(context.Request, exception.Message);
             return context.Response.WriteAsync(JsonConvert.SerializeObject(response));
         }
 

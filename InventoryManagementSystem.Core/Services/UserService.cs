@@ -30,7 +30,7 @@ namespace InventoryManagementSystem.Core.Services
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
             }
 
         }

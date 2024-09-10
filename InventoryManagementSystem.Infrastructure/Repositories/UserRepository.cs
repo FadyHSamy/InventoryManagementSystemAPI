@@ -37,7 +37,7 @@ namespace InventoryManagementSystem.Infrastructure.Repositories
             }
             catch (Exception ex)
             {
-                throw;
+                throw new DatabaseException(ex.Message);
             }
         }
         public async Task<User> GetUserInformation(string Username)
