@@ -2,12 +2,12 @@
 using InventoryManagementSystem.Core.Entities.Shared;
 using InventoryManagementSystem.Core.Entities.User;
 using InventoryManagementSystem.Core.Exceptions;
-using InventoryManagementSystem.Core.Interfaces.Repositories;
+using InventoryManagementSystem.Core.Interfaces.Repositories.AllUserIRepository;
 using InventoryManagementSystem.Infrastructure.Context;
 using Microsoft.Data.SqlClient;
 using System.Data;
 
-namespace InventoryManagementSystem.Infrastructure.Repositories
+namespace InventoryManagementSystem.Infrastructure.Repositories.AllUserRepository
 {
     public class UserRepository : IUserRepository
     {
@@ -57,7 +57,7 @@ namespace InventoryManagementSystem.Infrastructure.Repositories
             }
             catch (Exception ex)
             {
-                throw new DatabaseException("Error While Fetching user information.",ex);
+                throw new DatabaseException("Error While Fetching user information.", ex);
             }
         }
     }

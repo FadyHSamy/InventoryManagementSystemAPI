@@ -1,5 +1,5 @@
-﻿using InventoryManagementSystem.Core.Interfaces.Repositories;
-using InventoryManagementSystem.Infrastructure.Repositories;
+﻿using InventoryManagementSystem.Core.Interfaces.Repositories.AllUserIRepository;
+using InventoryManagementSystem.Infrastructure.Repositories.AllUserRepository;
 
 namespace InventoryManagementSystem.API.Extensions
 {
@@ -9,6 +9,8 @@ namespace InventoryManagementSystem.API.Extensions
         {
             // Register your services here
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserStatusRepository, UserStatusRepository>();
+            services.AddScoped<IUserRolesRepository, UserRoleRepository>();
 
 
         }

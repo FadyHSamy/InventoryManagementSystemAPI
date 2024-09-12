@@ -1,7 +1,7 @@
 ﻿using InventoryManagementSystem.API.Middlewares;
-using InventoryManagementSystem.Core.DTOs.User;
+using InventoryManagementSystem.Core.DTOs.UserDto;
 using InventoryManagementSystem.Core.Entities.Shared;
-using InventoryManagementSystem.Core.Interfaces.Services;
+using InventoryManagementSystem.Core.Interfaces.Services.AllUserIServices;
 using InventoryManagementSystem.Core.Utilities.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -16,20 +16,19 @@ namespace InventoryManagementSystem.API.Controllers
 
         public UserController(IUserService userService)
         {
-            _userService = userService;;
+            _userService = userService;
         }
 
         [HttpPost("AddUser")]
-        public async Task<IActionResult> AddUser([FromBody] AddingUserDto addUserDto)
+        public async Task<IActionResult> AddUser([FromBody] AddingUserRequest addUserDto)
         {
             try
             {
                 await _userService.AddUser(addUserDto);
-                var data = new { Name = "Test", Value = 123 };
-                var response = ApiResponseHelper.Success<object>(Request, "Request was successful");
-                return Ok();
+                ApiResponse<object> response = ApiResponseHelper.Success<object>(Request, "User added successfully");
+                return Ok(response);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -39,12 +38,13 @@ namespace InventoryManagementSystem.API.Controllers
         {
             try
             {
-                GetUserInformationDto GetUserInformationDto = await _userService.GetUserInformation(Username);
-                return Ok(GetUserInformationDto);
+                UserInformationResponse GetUserInformationDto = await _userService.GetUserInformation(Username);
+                ApiResponse<object> response = ApiResponseHelper.Success<object>(Request, "User information successfully fetched from the database", new { userInformation = GetUserInformationDto });
+                return Ok(response);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
     }

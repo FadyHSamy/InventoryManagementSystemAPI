@@ -3,7 +3,7 @@ using InventoryManagementSystem.Core.Entities.Shared;
 using InventoryManagementSystem.Core.Entities.User;
 using System.Threading.Tasks;
 
-namespace InventoryManagementSystem.Core.Interfaces.Repositories
+namespace InventoryManagementSystem.Core.Interfaces.Repositories.AllUserIRepository
 {
     public interface IUserRepository
     {

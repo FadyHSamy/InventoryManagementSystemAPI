@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace InventoryManagementSystem.Core.DTOs.User
+namespace InventoryManagementSystem.Core.DTOs.UserDto
 {
-    public class GetUserInformationDto
+    public class UserInformationResponse
     {
         public string Username { get; set; }
         public DateTime CreatedAt { get; set; }
-        public DateTime LoginSuccessfully { get; set; }
+        public DateTime? LoginSuccessfully { get; set; }
         public string MobileNumber { get; set; }
         public string Email { get; set; }
         public string StatusDescripton { get; set; }

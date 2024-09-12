@@ -42,6 +42,11 @@ namespace InventoryManagementSystem.Core.Utilities.Helpers
             return string.IsNullOrEmpty(text);
         }
 
+        public static string HashPassword(string plainPassword)
+        {
+            var passwordHash = BCrypt.Net.BCrypt.HashPassword(plainPassword);
+            return passwordHash;
+        }
 
     }
 }
