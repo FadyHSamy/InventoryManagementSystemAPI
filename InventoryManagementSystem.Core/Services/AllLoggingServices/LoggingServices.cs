@@ -1,5 +1,5 @@
 ﻿using InventoryManagementSystem.Core.Entities.Shared;
-using InventoryManagementSystem.Core.Interfaces.Repositories.AllLoggingRepository;
+using InventoryManagementSystem.Core.Interfaces.Repositories.AllLoggingIRepository;
 using InventoryManagementSystem.Core.Interfaces.Services.AllLoggingIServices;
 using System;
 using System.Collections.Generic;

@@ -2,7 +2,7 @@
 using InventoryManagementSystem.Core.Entities.Shared;
 using InventoryManagementSystem.Core.Entities.User;
 using InventoryManagementSystem.Core.Exceptions;
-using InventoryManagementSystem.Core.Interfaces.Repositories.AllLoggingRepository;
+using InventoryManagementSystem.Core.Interfaces.Repositories.AllLoggingIRepository;
 using InventoryManagementSystem.Infrastructure.Context;
 using System;
 using System.Collections.Generic;

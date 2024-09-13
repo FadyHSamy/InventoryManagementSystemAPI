@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace InventoryManagementSystem.Core.Interfaces.Repositories.AllLoggingRepository
+namespace InventoryManagementSystem.Core.Interfaces.Repositories.AllLoggingIRepository
 {
     public interface ILoggingRepository
     {
