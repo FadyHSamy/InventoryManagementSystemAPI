@@ -1,4 +1,6 @@
-﻿using InventoryManagementSystem.Core.Interfaces.Repositories.AllUserIRepository;
+﻿using InventoryManagementSystem.Core.Interfaces.Repositories.AllLoggingRepository;
+using InventoryManagementSystem.Core.Interfaces.Repositories.AllUserIRepository;
+using InventoryManagementSystem.Infrastructure.Repositories.AllLoggingRepository;
 using InventoryManagementSystem.Infrastructure.Repositories.AllUserRepository;
 
 namespace InventoryManagementSystem.API.Extensions
@@ -11,6 +13,7 @@ namespace InventoryManagementSystem.API.Extensions
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserStatusRepository, UserStatusRepository>();
             services.AddScoped<IUserRolesRepository, UserRoleRepository>();
+            services.AddScoped<ILoggingRepository, LoggingRepository>();
 
 
         }

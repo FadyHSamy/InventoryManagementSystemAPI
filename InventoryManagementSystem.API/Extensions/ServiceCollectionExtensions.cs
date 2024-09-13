@@ -1,5 +1,7 @@
-﻿using InventoryManagementSystem.Core.Interfaces.Services.AllUserIServices;
+﻿using InventoryManagementSystem.Core.Interfaces.Services.AllLoggingIServices;
+using InventoryManagementSystem.Core.Interfaces.Services.AllUserIServices;
 using InventoryManagementSystem.Core.Mappers.UserMappers;
+using InventoryManagementSystem.Core.Services.AllLoggingServices;
 using InventoryManagementSystem.Core.Services.AllUserServices;
 using InventoryManagementSystem.Infrastructure.Context;
 
@@ -13,6 +15,7 @@ namespace InventoryManagementSystem.API.Extensions
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserStatusService, UserStatusService>();
             services.AddScoped<IUserRoleService, UserRoleService>();
+            services.AddScoped<ILoggingServices, LoggingServices>();
 
             services.AddScoped<DapperContext>();
 
