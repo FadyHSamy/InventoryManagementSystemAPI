@@ -1,4 +1,5 @@
 ﻿using InventoryManagementSystem.Core.Entities.Shared;
+using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;

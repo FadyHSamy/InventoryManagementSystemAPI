@@ -1,6 +1,7 @@
 ﻿using InventoryManagementSystem.Core.Entities.Shared;
 using InventoryManagementSystem.Core.Interfaces.Repositories.AllLoggingIRepository;
 using InventoryManagementSystem.Core.Interfaces.Services.AllLoggingIServices;
+using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
