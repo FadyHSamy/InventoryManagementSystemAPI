@@ -3,6 +3,7 @@ using InventoryManagementSystem.Core.Entities.Shared;
 using InventoryManagementSystem.Core.Entities.User;
 using InventoryManagementSystem.Core.Exceptions;
 using InventoryManagementSystem.Core.Interfaces.Repositories.AllLoggingIRepository;
+using InventoryManagementSystem.Core.Interfaces.Repositories.AllSharedIRepository;
 using InventoryManagementSystem.Infrastructure.Context;
 using System;
 using System.Collections.Generic;
@@ -15,34 +16,34 @@ namespace InventoryManagementSystem.Infrastructure.Repositories.AllLoggingReposi
 {
     public class LoggingRepository : ILoggingRepository
     {
-        private readonly DapperContext _dapperContext;
-        public LoggingRepository(DapperContext dapperContext)
+        private readonly IDbConnection _connection;
+        private readonly IDbTransaction _transaction;
+        public LoggingRepository(IUnitOfWork unitOfWork)
         {
-            _dapperContext = dapperContext;
+            _connection = unitOfWork.Connection;
+            _transaction = unitOfWork.Transaction;
         }
         public async Task InsertLoggingError(LoggingError loggingError)
         {
             try
             {
                 var storedProcedure = "[ims].[InsertLoggingError]";
-                using (var connection = _dapperContext.CreateConnection())
-                {
-                    DynamicParameters parameters = new DynamicParameters();
-                    parameters.Add("LogLevel", loggingError.LogLevel);
-                    parameters.Add("Message", loggingError.Message);
-                    parameters.Add("Exception", loggingError.Exception);
-                    parameters.Add("InnerException", loggingError.InnerException);
-                    parameters.Add("StackTrace", loggingError.StackTrace);
-                    parameters.Add("ApplicationName", loggingError.ApplicationName);
-                    parameters.Add("UserID", loggingError.UserID);
-                    parameters.Add("MachineName", loggingError.MachineName);
-                    parameters.Add("Source", loggingError.Source);
-                    parameters.Add("RequestID", loggingError.RequestID);
-                    parameters.Add("AdditionalInfo", loggingError.AdditionalInfo);
 
-                    await connection.ExecuteAsync(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
-                    _dapperContext.Dispose();
-                }
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("LogLevel", loggingError.LogLevel);
+                parameters.Add("Message", loggingError.Message);
+                parameters.Add("Exception", loggingError.Exception);
+                parameters.Add("InnerException", loggingError.InnerException);
+                parameters.Add("StackTrace", loggingError.StackTrace);
+                parameters.Add("ApplicationName", loggingError.ApplicationName);
+                parameters.Add("UserID", loggingError.UserID);
+                parameters.Add("MachineName", loggingError.MachineName);
+                parameters.Add("Source", loggingError.Source);
+                parameters.Add("RequestID", loggingError.RequestID);
+                parameters.Add("AdditionalInfo", loggingError.AdditionalInfo);
+
+                await _connection.ExecuteAsync(storedProcedure, parameters, commandType: CommandType.StoredProcedure, transaction: _transaction);
+
             }
             catch (Exception ex)
             {

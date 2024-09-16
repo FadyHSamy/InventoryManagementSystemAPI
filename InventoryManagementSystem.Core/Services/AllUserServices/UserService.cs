@@ -7,22 +7,21 @@ using InventoryManagementSystem.Core.Exceptions;
 using InventoryManagementSystem.Core.Interfaces.Repositories.AllUserIRepository;
 using InventoryManagementSystem.Core.Interfaces.Services.AllUserIServices;
 using InventoryManagementSystem.Core.Utilities.Helpers;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace InventoryManagementSystem.Core.Services.AllUserServices
 {
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-        private readonly IUserStatusService _userStatusService;
-        private readonly IUserRoleService _userRoleService;
         private readonly IMapper _mapper;
+        private readonly IServiceProvider _serviceProvider;
 
-        public UserService(IUserRepository userRepository, IMapper mapper, IUserStatusService userStatusService, IUserRoleService userRoleService)
+        public UserService(IUserRepository userRepository, IMapper mapper, IServiceProvider serviceProvider)
         {
             _userRepository = userRepository;
-            _userStatusService = userStatusService;
-            _userRoleService = userRoleService;
             _mapper = mapper;
+            _serviceProvider = serviceProvider;
         }
 
         public async Task AddUser(AddingUserRequest addUserDto)
@@ -55,8 +54,8 @@ namespace InventoryManagementSystem.Core.Services.AllUserServices
                     throw new NotFoundException("Username not found");
                 }
 
-                UserRoleDescriptionResponse userRoleDescription = await _userRoleService.GetUserRoleDescription(user.RoleId);
-                UserStatusDescriptionResponse userStatusDescriptionResponse = await _userStatusService.GetUserStatusDescription(user.StatusId);
+                UserRoleDescriptionResponse userRoleDescription = await _serviceProvider.GetRequiredService<IUserRoleService>().GetUserRoleDescription(user.RoleId);
+                UserStatusDescriptionResponse userStatusDescriptionResponse = await _serviceProvider.GetRequiredService<IUserStatusService>().GetUserStatusDescription(user.StatusId);
 
                 UserInformationResponse GetUserInformationDto = _mapper.Map<UserInformationResponse>(user);
                 GetUserInformationDto.RoleName = userRoleDescription.RoleName;

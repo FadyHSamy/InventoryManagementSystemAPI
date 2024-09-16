@@ -3,6 +3,7 @@ using InventoryManagementSystem.Core.Entities.Category;
 using InventoryManagementSystem.Core.Entities.Product;
 using InventoryManagementSystem.Core.Exceptions;
 using InventoryManagementSystem.Core.Interfaces.Repositories.AllProductIRepository;
+using InventoryManagementSystem.Core.Interfaces.Repositories.AllSharedIRepository;
 using InventoryManagementSystem.Infrastructure.Context;
 using System;
 using System.Collections.Generic;
@@ -13,12 +14,14 @@ using System.Threading.Tasks;
 
 namespace InventoryManagementSystem.Infrastructure.Repositories.AllProductRepository
 {
-    public class ProductRepository: IProductRepository
+    public class ProductRepository : IProductRepository
     {
-        private readonly DapperContext _dapperContext;
-        public ProductRepository(DapperContext dapperContext)
+        private readonly IDbConnection _connection;
+        private readonly IDbTransaction _transaction;
+        public ProductRepository(IUnitOfWork unitOfWork)
         {
-            _dapperContext = dapperContext;
+            _connection = unitOfWork.Connection;
+            _transaction = unitOfWork.Transaction;
         }
 
         public async Task<List<Product>> GetProducts()
@@ -26,12 +29,10 @@ namespace InventoryManagementSystem.Infrastructure.Repositories.AllProductReposi
             try
             {
                 var storedProcedure = "[ims].[GetProducts]";
-                using (var connection = _dapperContext.CreateConnection())
-                {
-                    var products = await connection.QueryAsync<Product>(storedProcedure, commandType: CommandType.StoredProcedure);
-                    _dapperContext.Dispose();
-                    return products.ToList();
-                }
+
+                var products = await _connection.QueryAsync<Product>(storedProcedure, commandType: CommandType.StoredProcedure, transaction: _transaction);
+                return products.ToList();
+
             }
             catch (Exception ex)
             {
@@ -39,22 +40,24 @@ namespace InventoryManagementSystem.Infrastructure.Repositories.AllProductReposi
             }
         }
 
-        public async Task InsertProduct(Product Product)
+        public async Task<decimal> InsertProduct(Product Product)
         {
             try
             {
                 var storedProcedure = "[ims].[AddingProduct]";
-                using (var connection = _dapperContext.CreateConnection())
-                {
-                    DynamicParameters parameters = new DynamicParameters();
-                    parameters.Add("ProductName", Product.ProductName, dbType: DbType.String);
-                    parameters.Add("ProductDescription", Product.ProductDescription, dbType: DbType.String);
-                    parameters.Add("ProductPrice", Product.ProductPrice, dbType: DbType.Decimal);
-                    parameters.Add("CategoryId", Product.CategoryId, dbType: DbType.Int64);
 
-                    await connection.ExecuteAsync(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
-                    _dapperContext.Dispose();
-                }
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("ProductName", Product.ProductName, dbType: DbType.String);
+                parameters.Add("ProductDescription", Product.ProductDescription, dbType: DbType.String);
+                parameters.Add("ProductPrice", Product.ProductPrice, dbType: DbType.Decimal);
+                parameters.Add("CategoryId", Product.CategoryId, dbType: DbType.Int64);
+                parameters.Add("ProductId", "", dbType: DbType.Decimal, direction: ParameterDirection.Output);
+
+                await _connection.ExecuteAsync(storedProcedure, parameters, commandType: CommandType.StoredProcedure, transaction: _transaction);
+
+                decimal ProductId = parameters.Get<decimal>("ProductId");
+                return ProductId;
+
             }
             catch (Exception ex)
             {
@@ -67,14 +70,12 @@ namespace InventoryManagementSystem.Infrastructure.Repositories.AllProductReposi
             try
             {
                 var storedProcedure = "[ims].[DeleteProduct]";
-                using (var connection = _dapperContext.CreateConnection())
-                {
-                    DynamicParameters parameters = new DynamicParameters();
-                    parameters.Add("ProductId", ProductId, dbType: DbType.Int64);
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("ProductId", ProductId, dbType: DbType.Int64);
 
-                    await connection.ExecuteAsync(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
-                    _dapperContext.Dispose();
-                }
+                await _connection.ExecuteAsync(storedProcedure, parameters, commandType: CommandType.StoredProcedure, transaction: _transaction);
+
+
             }
             catch (Exception ex)
             {
@@ -87,15 +88,13 @@ namespace InventoryManagementSystem.Infrastructure.Repositories.AllProductReposi
             try
             {
                 var storedProcedure = "[ims].[GetProduct]";
-                using (var connection = _dapperContext.CreateConnection())
-                {
-                    DynamicParameters parameters = new DynamicParameters();
-                    parameters.Add("ProductId", ProductId, dbType: DbType.Int64);
 
-                    Product product = await connection.QueryFirstOrDefaultAsync<Product>(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
-                    _dapperContext.Dispose();
-                    return product;
-                }
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("ProductId", ProductId, dbType: DbType.Int64);
+
+                Product product = await _connection.QueryFirstOrDefaultAsync<Product>(storedProcedure, parameters, commandType: CommandType.StoredProcedure, transaction: _transaction);
+                return product;
+
             }
             catch (Exception ex)
             {

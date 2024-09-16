@@ -2,6 +2,7 @@
 using InventoryManagementSystem.Core.Entities.Shared;
 using InventoryManagementSystem.Core.Entities.User;
 using InventoryManagementSystem.Core.Exceptions;
+using InventoryManagementSystem.Core.Interfaces.Repositories.AllSharedIRepository;
 using InventoryManagementSystem.Core.Interfaces.Repositories.AllUserIRepository;
 using InventoryManagementSystem.Infrastructure.Context;
 using Microsoft.Data.SqlClient;
@@ -11,11 +12,13 @@ namespace InventoryManagementSystem.Infrastructure.Repositories.AllUserRepositor
 {
     public class UserRepository : IUserRepository
     {
-        private readonly DapperContext _dapperContext;
+        private readonly IDbConnection _connection;
+        private readonly IDbTransaction _transaction;
 
-        public UserRepository(DapperContext dapperContext)
+        public UserRepository(IUnitOfWork unitOfWork)
         {
-            _dapperContext = dapperContext;
+            _connection = unitOfWork.Connection;
+            _transaction = unitOfWork.Transaction;
         }
 
         public async Task AddUser(User user)
@@ -23,17 +26,15 @@ namespace InventoryManagementSystem.Infrastructure.Repositories.AllUserRepositor
             try
             {
                 var storedProcedure = "[usr].[AddingUser]";
-                using (var connection = _dapperContext.CreateConnection())
-                {
-                    DynamicParameters parameters = new DynamicParameters();
-                    parameters.Add("Username", user.Username, dbType: DbType.String);
-                    parameters.Add("HashedPassword", user.PasswordHash, dbType: DbType.String);
-                    parameters.Add("MobileNumber", user.MobileNumber, dbType: DbType.String);
-                    parameters.Add("Email", user.Email, dbType: DbType.String);
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("Username", user.Username, dbType: DbType.String);
+                parameters.Add("HashedPassword", user.PasswordHash, dbType: DbType.String);
+                parameters.Add("MobileNumber", user.MobileNumber, dbType: DbType.String);
+                parameters.Add("Email", user.Email, dbType: DbType.String);
 
-                    await connection.ExecuteAsync(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
-                    _dapperContext.Dispose();
-                }
+                await _connection.ExecuteAsync(storedProcedure, parameters, commandType: CommandType.StoredProcedure, transaction: _transaction); // Execute with transaction
+
+
             }
             catch (Exception ex)
             {
@@ -45,15 +46,13 @@ namespace InventoryManagementSystem.Infrastructure.Repositories.AllUserRepositor
             try
             {
                 var storedProcedure = "[usr].[GetUserInformationByUsername]";
-                using (var connection = _dapperContext.CreateConnection())
-                {
-                    DynamicParameters parameters = new DynamicParameters();
-                    parameters.Add("Username", Username, dbType: DbType.String);
 
-                    User UserInformation = await connection.QueryFirstOrDefaultAsync<User>(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
-                    _dapperContext.Dispose();
-                    return UserInformation;
-                }
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("Username", Username, dbType: DbType.String);
+
+                User UserInformation = await _connection.QueryFirstOrDefaultAsync<User>(storedProcedure, parameters, commandType: CommandType.StoredProcedure, transaction: _transaction);
+                return UserInformation;
+
             }
             catch (Exception ex)
             {

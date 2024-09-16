@@ -12,5 +12,6 @@ namespace InventoryManagementSystem.Core.DTOs.ProductDto
         public string ProductDescription { get; set; }
         public decimal ProductPrice { get; set; }
         public int CategoryId { get; set; }
+        public int StockQuantity { get; set; }
     }
 }

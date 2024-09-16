@@ -13,7 +13,7 @@ namespace InventoryManagementSystem.Infrastructure.Context
 {
     public interface IDapperContext
     {
-        IDbConnection CreateConnection();
+        IDbConnection CreateConnection(); // To create a connection to the database
     }
     public class DapperContext : IDapperContext, IDisposable
     {
@@ -22,31 +22,24 @@ namespace InventoryManagementSystem.Infrastructure.Context
 
         public DapperContext(IOptions<DatabaseSettings> dbSettings)
         {
-            _connectionString = dbSettings?.Value?.DefaultConnection ?? throw new ArgumentNullException(nameof(dbSettings));
+            _connectionString = dbSettings.Value.DefaultConnection;
         }
 
         public IDbConnection CreateConnection()
         {
-            _connection = new SqlConnection(_connectionString);
-            _connection.Open();
+            _connection = new SqlConnection(_connectionString); // Create SQL Server connection
+            _connection.Open(); // Open the connection
             return _connection;
         }
 
-        // Properly manage the connection lifecycle
+        // Close and dispose of the connection properly
         public void Dispose()
-        {
-            DisposeConnection();
-            GC.SuppressFinalize(this);
-        }
-
-        // Method to close and dispose of the connection
-        private void DisposeConnection()
         {
             if (_connection != null && _connection.State != ConnectionState.Closed)
             {
                 _connection.Close();
                 _connection.Dispose();
-                _connection = null; // Set to null after disposal
+                _connection = null; // Clear connection object after disposing
             }
         }
     }

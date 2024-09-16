@@ -11,7 +11,7 @@ namespace InventoryManagementSystem.Core.Interfaces.Repositories.AllProductIRepo
     {
         Task<Product> GetProduct(int ProductId);
         Task<List<Product>> GetProducts();
-        Task InsertProduct(Product Product);
+        Task<decimal> InsertProduct(Product Product);
         Task DeleteProduct(int ProductId);
     }
 }

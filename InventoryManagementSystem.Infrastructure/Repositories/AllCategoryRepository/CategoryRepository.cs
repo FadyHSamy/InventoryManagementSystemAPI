@@ -3,6 +3,7 @@ using InventoryManagementSystem.Core.Entities.Category;
 using InventoryManagementSystem.Core.Entities.User;
 using InventoryManagementSystem.Core.Exceptions;
 using InventoryManagementSystem.Core.Interfaces.Repositories.AllCategoryIRepository;
+using InventoryManagementSystem.Core.Interfaces.Repositories.AllSharedIRepository;
 using InventoryManagementSystem.Infrastructure.Context;
 using System;
 using System.Collections.Generic;
@@ -15,10 +16,12 @@ namespace InventoryManagementSystem.Infrastructure.Repositories.AllCategoryRepos
 {
     public class CategoryRepository : ICategoryRepository
     {
-        private readonly DapperContext _dapperContext;
-        public CategoryRepository(DapperContext dapperContext)
+        private readonly IDbConnection _connection;
+        private readonly IDbTransaction _transaction;
+        public CategoryRepository(IUnitOfWork unitOfWork)
         {
-            _dapperContext = dapperContext;
+            _connection = unitOfWork.Connection;
+            _transaction = unitOfWork.Transaction;
         }
 
         public async Task DeleteCategory(int categoryId)
@@ -26,14 +29,12 @@ namespace InventoryManagementSystem.Infrastructure.Repositories.AllCategoryRepos
             try
             {
                 var storedProcedure = "[ims].[DeleteCategory]";
-                using (var connection = _dapperContext.CreateConnection())
-                {
-                    DynamicParameters parameters = new DynamicParameters();
-                    parameters.Add("CategoryId", categoryId, dbType: DbType.Int64);
 
-                    await connection.ExecuteAsync(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
-                    _dapperContext.Dispose();
-                }
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("CategoryId", categoryId, dbType: DbType.Int64);
+
+                await _connection.ExecuteAsync(storedProcedure, parameters, commandType: CommandType.StoredProcedure, transaction: _transaction);
+
             }
             catch (Exception ex)
             {
@@ -46,12 +47,10 @@ namespace InventoryManagementSystem.Infrastructure.Repositories.AllCategoryRepos
             try
             {
                 var storedProcedure = "[ims].[GetAllCategories]";
-                using (var connection = _dapperContext.CreateConnection())
-                {
-                    var categories = await connection.QueryAsync<Category>(storedProcedure, commandType: CommandType.StoredProcedure);
-                    _dapperContext.Dispose();
-                    return categories.ToList();
-                }
+
+                var categories = await _connection.QueryAsync<Category>(storedProcedure, commandType: CommandType.StoredProcedure, transaction: _transaction);
+                return categories.ToList();
+
             }
             catch (Exception ex)
             {
@@ -64,15 +63,14 @@ namespace InventoryManagementSystem.Infrastructure.Repositories.AllCategoryRepos
             try
             {
                 var storedProcedure = "[ims].[GetSpecificCategory]";
-                using (var connection = _dapperContext.CreateConnection())
-                {
-                    DynamicParameters parameters = new DynamicParameters();
-                    parameters.Add("CategoryId", categoryId, dbType: DbType.Int64);
 
-                    Category categories = await connection.QueryFirstOrDefaultAsync<Category>(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
-                    _dapperContext.Dispose();
-                    return categories;
-                }
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("CategoryId", categoryId, dbType: DbType.Int64);
+
+                Category categories = await _connection.QueryFirstOrDefaultAsync<Category>(storedProcedure, parameters, commandType: CommandType.StoredProcedure, transaction: _transaction);
+
+                return categories;
+
             }
             catch (Exception ex)
             {
@@ -85,14 +83,12 @@ namespace InventoryManagementSystem.Infrastructure.Repositories.AllCategoryRepos
             try
             {
                 var storedProcedure = "[ims].[AddingCategory]";
-                using (var connection = _dapperContext.CreateConnection())
-                {
-                    DynamicParameters parameters = new DynamicParameters();
-                    parameters.Add("CategoryName", categoryName, dbType: DbType.String);
 
-                    await connection.ExecuteAsync(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
-                    _dapperContext.Dispose();
-                }
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("CategoryName", categoryName, dbType: DbType.String);
+
+                await _connection.ExecuteAsync(storedProcedure, parameters, commandType: CommandType.StoredProcedure, transaction: _transaction);
+
             }
             catch (Exception ex)
             {

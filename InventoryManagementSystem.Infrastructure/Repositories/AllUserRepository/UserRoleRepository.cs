@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using InventoryManagementSystem.Core.Entities.User;
 using InventoryManagementSystem.Core.Exceptions;
+using InventoryManagementSystem.Core.Interfaces.Repositories.AllSharedIRepository;
 using InventoryManagementSystem.Core.Interfaces.Repositories.AllUserIRepository;
 using InventoryManagementSystem.Infrastructure.Context;
 using System;
@@ -14,32 +15,31 @@ namespace InventoryManagementSystem.Infrastructure.Repositories.AllUserRepositor
 {
     public class UserRoleRepository : IUserRolesRepository
     {
-        private readonly DapperContext _dapperContext;
-        public UserRoleRepository(DapperContext dapperContext)
+        private readonly IDbConnection _connection;
+        private readonly IDbTransaction _transaction;
+        public UserRoleRepository(IUnitOfWork unitOfWork)
         {
-            _dapperContext = dapperContext;
+            _connection = unitOfWork.Connection;
+            _transaction = unitOfWork.Transaction;
         }
         public async Task<UserRoles> GetUserRoleDescription(int userRoleId)
         {
             try
             {
                 var storedProcedure = "[usr].[GetUserRoleDescription]";
-                using (var connection = _dapperContext.CreateConnection())
-                {
-                    DynamicParameters parameters = new DynamicParameters();
-                    parameters.Add("RoleId", userRoleId, dbType: DbType.Int32);
-                    parameters.Add("RoleName","", dbType: DbType.String, direction: ParameterDirection.Output);
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("RoleId", userRoleId, dbType: DbType.Int32);
+                parameters.Add("RoleName", "", dbType: DbType.String, direction: ParameterDirection.Output);
 
-                    await connection.ExecuteAsync(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
-                    _dapperContext.Dispose();
-                    string userRoleDescription = parameters.Get<string>("RoleName");
-                    UserRoles userRole = new UserRoles()
-                    {
-                        RoleId = userRoleId,
-                        RoleName = userRoleDescription
-                    };
-                    return userRole;
-                }
+                await _connection.ExecuteAsync(storedProcedure, parameters, commandType: CommandType.StoredProcedure, transaction: _transaction);
+                string userRoleDescription = parameters.Get<string>("RoleName");
+                UserRoles userRole = new UserRoles()
+                {
+                    RoleId = userRoleId,
+                    RoleName = userRoleDescription
+                };
+                return userRole;
+
             }
             catch (Exception ex)
             {

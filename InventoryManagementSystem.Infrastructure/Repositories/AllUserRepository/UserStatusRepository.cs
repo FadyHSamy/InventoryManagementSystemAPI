@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using InventoryManagementSystem.Core.Entities.User;
 using InventoryManagementSystem.Core.Exceptions;
+using InventoryManagementSystem.Core.Interfaces.Repositories.AllSharedIRepository;
 using InventoryManagementSystem.Core.Interfaces.Repositories.AllUserIRepository;
 using InventoryManagementSystem.Infrastructure.Context;
 using System;
@@ -14,10 +15,12 @@ namespace InventoryManagementSystem.Infrastructure.Repositories.AllUserRepositor
 {
     public class UserStatusRepository : IUserStatusRepository
     {
-        private readonly DapperContext _dapperContext;
-        public UserStatusRepository(DapperContext dapperContext)
+        private readonly IDbConnection _connection;
+        private readonly IDbTransaction _transaction;
+        public UserStatusRepository(IUnitOfWork unitOfWork)
         {
-            _dapperContext = dapperContext;
+            _connection = unitOfWork.Connection;
+            _transaction = unitOfWork.Transaction;
         }
 
         public async Task<UserStatus> GetUserStatusDescription(int userStatusId)
@@ -25,22 +28,20 @@ namespace InventoryManagementSystem.Infrastructure.Repositories.AllUserRepositor
             try
             {
                 var storedProcedure = "[usr].[GetUserStatusDescription]";
-                using (var connection = _dapperContext.CreateConnection())
-                {
-                    DynamicParameters parameters = new DynamicParameters();
-                    parameters.Add("UserStatusId", userStatusId, dbType: DbType.Int32);
-                    parameters.Add("UserStatusDescription","", dbType: DbType.String, direction: ParameterDirection.Output);
 
-                    await connection.ExecuteAsync(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
-                    _dapperContext.Dispose();
-                    string userStatusDescription = parameters.Get<string>("UserStatusDescription");
-                    UserStatus userStatus = new UserStatus()
-                    {
-                        StatusId = userStatusId,
-                        StatusDescripton = userStatusDescription
-                    };
-                    return userStatus;
-                }
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("UserStatusId", userStatusId, dbType: DbType.Int32);
+                parameters.Add("UserStatusDescription", "", dbType: DbType.String, direction: ParameterDirection.Output);
+
+                await _connection.ExecuteAsync(storedProcedure, parameters, commandType: CommandType.StoredProcedure, transaction: _transaction);
+                string userStatusDescription = parameters.Get<string>("UserStatusDescription");
+                UserStatus userStatus = new UserStatus()
+                {
+                    StatusId = userStatusId,
+                    StatusDescripton = userStatusDescription
+                };
+                return userStatus;
+
             }
             catch (Exception ex)
             {

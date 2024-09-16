@@ -11,7 +11,7 @@ namespace InventoryManagementSystem.Core.Mappers.UserMappers
         public UserProfile()
         {
             CreateMap<AddingUserRequest, User>()
-                .ForMember(dest => dest.PasswordHash, opt => opt.Ignore());
+                .ForMember(entity => entity.PasswordHash, opt => opt.Ignore());
 
             CreateMap<UserInformationResponse, User>()
                 .ForMember(entity => entity.Username, opt => opt.MapFrom(dto => dto.Username))

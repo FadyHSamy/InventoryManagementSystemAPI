@@ -1,9 +1,14 @@
 ﻿using AutoMapper;
+using InventoryManagementSystem.Core.DTOs.CategoryDto;
+using InventoryManagementSystem.Core.DTOs.InventoryDto;
 using InventoryManagementSystem.Core.DTOs.ProductDto;
 using InventoryManagementSystem.Core.Entities.Product;
 using InventoryManagementSystem.Core.Exceptions;
 using InventoryManagementSystem.Core.Interfaces.Repositories.AllProductIRepository;
+using InventoryManagementSystem.Core.Interfaces.Services.AllCategoryIServices;
+using InventoryManagementSystem.Core.Interfaces.Services.AllInventoryIServices;
 using InventoryManagementSystem.Core.Interfaces.Services.AllProductIServices;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace InventoryManagementSystem.Core.Services.AllProductServices
 {
@@ -11,10 +16,12 @@ namespace InventoryManagementSystem.Core.Services.AllProductServices
     {
         private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
-        public ProductService(IProductRepository productRepository, IMapper mapper)
+        private readonly IServiceProvider _serviceProvider;
+        public ProductService(IProductRepository productRepository, IMapper mapper, ICategoryService categoryService, IServiceProvider serviceProvider)
         {
             _productRepository = productRepository;
             _mapper = mapper;
+            _serviceProvider = serviceProvider;
         }
 
         public async Task DeleteProduct(int ProductId)
@@ -88,7 +95,20 @@ namespace InventoryManagementSystem.Core.Services.AllProductServices
             try
             {
                 Product product = _mapper.Map<Product>(insertProductRequest);
-                await _productRepository.InsertProduct(product);
+                GetCategoryResponse categoryResponse = await _serviceProvider.GetRequiredService<ICategoryService>().GetCategory(product.CategoryId);
+
+                if (categoryResponse == null)
+                {
+                    throw new NotFoundException("There Is No Category With This Id");
+                }
+
+                product.ProductId = await _productRepository.InsertProduct(product);
+                InsertProductInventoryRequest insertProductInventory = new()
+                {
+                    ProductId = product.ProductId,
+                    StockQuantity = insertProductRequest.StockQuantity
+                };
+                await _serviceProvider.GetRequiredService<IInventoryServices>().InsertProductInventory(insertProductInventory);
             }
             catch (Exception)
             {
