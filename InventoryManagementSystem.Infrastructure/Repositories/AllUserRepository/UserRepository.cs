@@ -41,6 +41,28 @@ namespace InventoryManagementSystem.Infrastructure.Repositories.AllUserRepositor
                 throw new DatabaseException(ex.Message);
             }
         }
+
+        public async Task<string> GetUserHashPassword(string Username)
+        {
+            try
+            {
+                var storedProcedure = "[usr].[GetUserHashPassword]";
+
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("Username", Username, dbType: DbType.String);
+                parameters.Add("passwordHash", "", dbType: DbType.String, direction: ParameterDirection.Output);
+
+                await _connection.QueryFirstOrDefaultAsync(storedProcedure, parameters, commandType: CommandType.StoredProcedure, transaction: _transaction);
+                string PasswordHashed = parameters.Get<string>("passwordHash");
+                return PasswordHashed;
+
+            }
+            catch (Exception ex)
+            {
+                throw new DatabaseException("Error While Fetching user information.", ex);
+            }
+        }
+
         public async Task<User> GetUserInformation(string Username)
         {
             try

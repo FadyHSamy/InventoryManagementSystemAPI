@@ -39,6 +39,28 @@ namespace InventoryManagementSystem.Core.Services.AllUserServices
 
         }
 
+        public async Task<string> GetUserHashPassword(string Username)
+        {
+            try
+            {
+                if (Username == null)
+                {
+                    throw new ValidationCustomException("Username is required");
+                }
+                User user = await _userRepository.GetUserInformation(Username);
+                if (user == null)
+                {
+                    throw new NotFoundException("Username not found");
+                }
+                string passwordHashed =  await _userRepository.GetUserHashPassword(Username);
+                return passwordHashed;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
         public async Task<UserInformationResponse> GetUserInformation(string Username)
         {
             try

@@ -9,6 +9,7 @@ namespace InventoryManagementSystem.API.Extensions
             app.UseMiddleware<ApiResponseMiddleware>();
             app.UseMiddleware<CustomExceptionsMiddleware>();
             app.UseMiddleware<TransactionMiddleware>();
+            app.UseMiddleware<AuthorizationMiddleware>();
         }
     }
 }

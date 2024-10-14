@@ -13,4 +13,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Entities\Auth\" />
+    <Folder Include="Utilities\Token\" />
+  </ItemGroup>
+
 </Project>

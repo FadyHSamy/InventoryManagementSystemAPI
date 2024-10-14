@@ -47,6 +47,11 @@ namespace InventoryManagementSystem.Core.Utilities.Helpers
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(plainPassword);
             return passwordHash;
         }
+        public static bool VerifyHashPassword(string userPassword , string databaseUserPassword)
+        {
+            var valid = BCrypt.Net.BCrypt.Verify(userPassword,databaseUserPassword);
+            return valid;
+        }
 
     }
 }

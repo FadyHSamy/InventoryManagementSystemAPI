@@ -7,5 +7,6 @@ namespace InventoryManagementSystem.Core.Interfaces.Services.AllUserIServices
     {
         Task AddUser(AddingUserRequest addUserDto);
         Task<UserInformationResponse> GetUserInformation(string Username);
+        Task<string> GetUserHashPassword(string Username);
     }
 }

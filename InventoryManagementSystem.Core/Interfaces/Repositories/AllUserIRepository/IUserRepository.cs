@@ -9,5 +9,6 @@ namespace InventoryManagementSystem.Core.Interfaces.Repositories.AllUserIReposit
     {
         Task AddUser(User user);
         Task<User> GetUserInformation(string Username);
+        Task<string> GetUserHashPassword (string Username);
     }
 }

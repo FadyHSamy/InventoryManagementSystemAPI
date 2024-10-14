@@ -50,6 +50,9 @@ namespace InventoryManagementSystem.API.Middlewares
                     case NotFoundException notFoundEx:
                         await HandleExceptionAsync(context, notFoundEx.Message, HttpStatusCode.NotFound);
                         break;
+                    case AuthException authException:
+                        await HandleExceptionAsync(context, authException.Message, HttpStatusCode.Unauthorized);
+                        break;
                     default:
                         await HandleExceptionAsync(context, "An unhandled exception occurred.", HttpStatusCode.InternalServerError);
                         break;
