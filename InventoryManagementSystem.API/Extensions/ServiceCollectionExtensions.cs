@@ -16,6 +16,7 @@ using InventoryManagementSystem.Infrastructure.Context;
 using InventoryManagementSystem.Infrastructure.Repositories.AllSharedRepository;
 using InventoryManagementSystem.Infrastructure.Services;
 using Serilog;
+using System.Text.Json;
 
 namespace InventoryManagementSystem.API.Extensions
 {
@@ -37,11 +38,17 @@ namespace InventoryManagementSystem.API.Extensions
 
             services.AddSingleton(Log.Logger);
 
-            services.AddScoped<IDapperContext,DapperContext>();
+            services.AddScoped<IDapperContext, DapperContext>();
 
             services.AddAutoMapper(typeof(UserProfile));
 
             services.AddSingleton(provider => provider);
+
+            services.AddControllers()
+                    .AddJsonOptions(options =>
+                    {
+                        options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                    });
 
         }
     }

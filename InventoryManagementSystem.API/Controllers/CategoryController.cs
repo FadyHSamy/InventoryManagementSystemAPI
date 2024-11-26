@@ -6,7 +6,6 @@ using InventoryManagementSystem.Core.Exceptions;
 using InventoryManagementSystem.Core.Interfaces.Services.AllCategoryIServices;
 using InventoryManagementSystem.Core.Utilities.Helpers;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace InventoryManagementSystem.API.Controllers
 {

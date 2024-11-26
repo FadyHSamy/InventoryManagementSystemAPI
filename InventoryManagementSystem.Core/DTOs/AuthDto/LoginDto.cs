@@ -13,6 +13,12 @@ namespace InventoryManagementSystem.Core.DTOs.AuthDto
     }
     public class LoginResponseDto
     {
-        public bool Success { get; set; }
+        public string token { get; set; }
+        public UserLoginResponse user { get; set; }
+    }
+    public class UserLoginResponse
+    {
+        public string username { get; set; }
+        public string role { get; set; }
     }
 }

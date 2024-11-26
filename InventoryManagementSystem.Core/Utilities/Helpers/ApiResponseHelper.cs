@@ -15,10 +15,10 @@ namespace InventoryManagementSystem.Core.Utilities.Helpers
         {
             return new ApiResponse<T>
             {
-                IsSuccess = true,
-                Message = message,
-                Data = data,
-                RequestApiUrl = request.GetDisplayUrl()
+                isSuccess = true,
+                message = message,
+                data = data,
+                requestApiUrl = request.GetDisplayUrl()
             };
         }
 
@@ -26,10 +26,10 @@ namespace InventoryManagementSystem.Core.Utilities.Helpers
         {
             return new ApiResponse<T>
             {
-                IsSuccess = false,
-                Message = message,
-                Data = default,
-                RequestApiUrl = request.GetDisplayUrl()
+                isSuccess = false,
+                message = message,
+                data = default,
+                requestApiUrl = request.GetDisplayUrl()
             };
         }
     }

@@ -1,9 +1,12 @@
-﻿using InventoryManagementSystem.Core.DTOs.AuthDto;
+﻿using Azure;
+using InventoryManagementSystem.Core.DTOs.AuthDto;
 using InventoryManagementSystem.Core.Entities.User;
+using InventoryManagementSystem.Core.Exceptions;
 using InventoryManagementSystem.Core.Interfaces.Repositories.AllAuthRepository;
 using InventoryManagementSystem.Core.Interfaces.Services.AllAuthServices;
 using InventoryManagementSystem.Core.Interfaces.Services.AllJwtServices;
 using InventoryManagementSystem.Core.Interfaces.Services.AllUserIServices;
+using InventoryManagementSystem.Core.Services.AllUserServices;
 using InventoryManagementSystem.Core.Utilities.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -24,18 +27,31 @@ namespace InventoryManagementSystem.Infrastructure.Services
             _authRepository = authRepository;
             _serviceProvider = serviceProvider;
         }
-        public async Task<string> Login(LoginRequestDto loginRequestDto)
+        public async Task<LoginResponseDto> Login(LoginRequestDto loginRequestDto)
         {
-            string passwordHashed = await _serviceProvider.GetRequiredService<IUserService>().GetUserHashPassword(loginRequestDto.Username); ;
+            string passwordHashed = await _serviceProvider.GetRequiredService<IUserService>().GetUserHashPassword(loginRequestDto.Username);
 
             bool isValid = Helpers.VerifyHashPassword(loginRequestDto.Password, passwordHashed);
             if (!isValid)
             {
-                throw new Exception("username or password is incorrect");
+                throw new AuthException("username or password is incorrect");
             }
+            string token = await _serviceProvider.GetRequiredService<IJwtService>().GenerateUserToken(loginRequestDto.Username);
 
-            
-            return await _serviceProvider.GetRequiredService<IJwtService>().GenerateUserToken(loginRequestDto.Username);
+            var userInformation = await _serviceProvider.GetRequiredService<IUserService>().GetUserInformation(loginRequestDto.Username);
+
+
+            LoginResponseDto response = new LoginResponseDto()
+            {
+                token = token,
+                user = new UserLoginResponse
+                {
+                    username = loginRequestDto.Username,
+                    role = userInformation.RoleName
+                }
+            };
+
+            return response;
         }
 
         public async Task<string> RefreshToken(string token)

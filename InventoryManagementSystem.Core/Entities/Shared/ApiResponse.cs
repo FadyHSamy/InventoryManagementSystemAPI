@@ -8,9 +8,9 @@ namespace InventoryManagementSystem.Core.Entities.Shared
 {
     public class ApiResponse<T>
     {
-        public bool IsSuccess { get; set; }
-        public string? Message { get; set; }
-        public T? Data { get; set; }
-        public string RequestApiUrl { get; set; }
+        public bool isSuccess { get; set; }
+        public string? message { get; set; }
+        public T? data { get; set; }
+        public string requestApiUrl { get; set; }
     }
 }

@@ -65,7 +65,7 @@ namespace InventoryManagementSystem.API.Middlewares
             try
             {
                 var existingApiResponse = JsonConvert.DeserializeObject<ApiResponse<object>>(responseBody);
-                if (existingApiResponse != null && existingApiResponse.IsSuccess)
+                if (existingApiResponse != null && existingApiResponse.isSuccess)
                 {
                     return responseBody;
                 }
@@ -76,10 +76,10 @@ namespace InventoryManagementSystem.API.Middlewares
 
             ApiResponse<object> apiResponse = new ApiResponse<object>
             {
-                IsSuccess = true,
-                Message = "Request completed successfully.",
-                Data = Helpers.IsEmptyString(responseBody) ? null : JsonConvert.DeserializeObject<object>(responseBody),
-                RequestApiUrl = context.Request.GetDisplayUrl()
+                isSuccess = true,
+                message = "Request completed successfully.",
+                data = Helpers.IsEmptyString(responseBody) ? null : JsonConvert.DeserializeObject<object>(responseBody),
+                requestApiUrl = context.Request.GetDisplayUrl()
             };
 
             return JsonConvert.SerializeObject(apiResponse);
@@ -91,7 +91,7 @@ namespace InventoryManagementSystem.API.Middlewares
             try
             {
                 ApiResponse<object> existingApiResponse = JsonConvert.DeserializeObject<ApiResponse<object>>(responseBody)!;
-                if (existingApiResponse != null && !existingApiResponse.IsSuccess)
+                if (existingApiResponse != null && !existingApiResponse.isSuccess)
                 {
                     return responseBody;
                 }
@@ -102,10 +102,10 @@ namespace InventoryManagementSystem.API.Middlewares
 
             ApiResponse<object> apiResponse = new ApiResponse<object>
             {
-                IsSuccess = false,
-                Message = "An error occurred.",
-                Data = null,
-                RequestApiUrl = context.Request.GetDisplayUrl()
+                isSuccess = false,
+                message = "An error occurred.",
+                data = null,
+                requestApiUrl = context.Request.GetDisplayUrl()
             };
             return JsonConvert.SerializeObject(apiResponse);
             
@@ -116,10 +116,10 @@ namespace InventoryManagementSystem.API.Middlewares
             context.Response.StatusCode = 500;
             ApiResponse<object> apiResponse = new ApiResponse<object>
             {
-                IsSuccess = false,
-                Message = "An internal server error occurred.",
-                Data = null,
-                RequestApiUrl = context.Request.GetDisplayUrl()
+                isSuccess = false,
+                message = "An internal server error occurred.",
+                data = null,
+                requestApiUrl = context.Request.GetDisplayUrl()
             };
 
             string result = JsonConvert.SerializeObject(apiResponse);

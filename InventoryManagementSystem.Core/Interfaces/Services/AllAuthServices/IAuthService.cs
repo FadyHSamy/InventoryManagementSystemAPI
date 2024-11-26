@@ -9,7 +9,7 @@ namespace InventoryManagementSystem.Core.Interfaces.Services.AllAuthServices
 {
     public interface IAuthService
     {
-        Task<string> Login(LoginRequestDto loginRequestDto);
+        Task<LoginResponseDto> Login(LoginRequestDto loginRequestDto);
         Task<string> RefreshToken(string token);
     }
 }
