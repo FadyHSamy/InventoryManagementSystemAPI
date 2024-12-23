@@ -12,5 +12,6 @@ namespace InventoryManagementSystem.Core.Interfaces.Services.AllInventoryIServic
     {
         Task<GetProductInventoryResponse> GetProductInventory(int productId);
         Task InsertProductInventory(InsertProductInventoryRequest insertProductInventoryRequest);
+        Task DeleteProductInventory(int productId);
     }
 }

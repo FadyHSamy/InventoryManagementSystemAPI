@@ -21,7 +21,7 @@ namespace InventoryManagementSystem.Core.Services.AllInventoryServices
         private readonly IInventoryRepository _inventoryRepository;
         private readonly IMapper _mapper;
         private readonly IServiceProvider _serviceProvider;
-        public InventoryServices(IInventoryRepository inventoryRepository, IMapper mapper,IProductService productService, IServiceProvider serviceProvider)
+        public InventoryServices(IInventoryRepository inventoryRepository, IMapper mapper, IProductService productService, IServiceProvider serviceProvider)
         {
             _inventoryRepository = inventoryRepository;
             _mapper = mapper;
@@ -53,14 +53,38 @@ namespace InventoryManagementSystem.Core.Services.AllInventoryServices
             try
             {
                 Inventory inventory = _mapper.Map<Inventory>(insertProductInventoryRequest);
-                GetProductResponse productResponse =await _serviceProvider.GetRequiredService<IProductService>().GetProduct(inventory.ProductId);
-                if (productResponse == null) 
+                GetProductResponse productResponse = await _serviceProvider.GetRequiredService<IProductService>().GetProduct(inventory.ProductId);
+                if (productResponse == null)
                 {
                     throw new NotFoundException("There Is No Product With This Id");
                 }
                 await _inventoryRepository.InsertProductInventory(inventory);
             }
             catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task DeleteProductInventory(int productId)
+        {
+            try
+            {
+                await _inventoryRepository.DeleteProductInventory(productId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        
+        public async Task AdjustProductInventory(int productId , int stockAdjustment)
+        {
+            try
+            {
+                await _inventoryRepository.AdjustProductInventory(productId, stockAdjustment);
+            }
+            catch (Exception)
             {
                 throw;
             }

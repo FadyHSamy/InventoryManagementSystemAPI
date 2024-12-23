@@ -40,7 +40,7 @@ namespace InventoryManagementSystem.Infrastructure.Repositories.AllProductReposi
             }
         }
 
-        public async Task<decimal> InsertProduct(Product Product)
+        public async Task<int> InsertProduct(Product Product)
         {
             try
             {
@@ -55,7 +55,7 @@ namespace InventoryManagementSystem.Infrastructure.Repositories.AllProductReposi
 
                 await _connection.ExecuteAsync(storedProcedure, parameters, commandType: CommandType.StoredProcedure, transaction: _transaction);
 
-                decimal ProductId = parameters.Get<decimal>("ProductId");
+                int ProductId = parameters.Get<int>("ProductId");
                 return ProductId;
 
             }

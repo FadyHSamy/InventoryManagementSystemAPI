@@ -58,5 +58,42 @@ namespace InventoryManagementSystem.Infrastructure.Repositories.AllInventoryRepo
                 throw new DatabaseException("Error While Inserting Product Inventory.", ex);
             }
         }
+        
+        public async Task DeleteProductInventory(int productId)
+        {
+            try
+            {
+                var storedProcedure = "[ims].[DeleteProductInventory]";
+
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("ProductId", productId, dbType: DbType.Int32);
+
+                await _connection.ExecuteAsync(storedProcedure, parameters, commandType: CommandType.StoredProcedure, transaction: _transaction);
+            }
+            catch (Exception ex)
+            {
+                throw new DatabaseException("Error While Deleting Product Inventory.", ex);
+            }
+        }
+    
+        public async Task AdjustProductInventory(int productId, int stockAdjustment)
+        {
+            try
+            {
+                var storedProcedure = "[ims].[AdjustProductInventory]";
+
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("ProductId", productId, dbType: DbType.Int32);
+                parameters.Add("StockAdjustment", stockAdjustment, dbType: DbType.Int32);
+
+                await _connection.ExecuteAsync(storedProcedure, parameters, commandType: CommandType.StoredProcedure, transaction: _transaction);
+            }
+            catch (Exception ex)
+            {
+                throw new DatabaseException("Error While Adjusting Product Inventory.", ex);
+            }
+        }
+    
+    
     }
 }

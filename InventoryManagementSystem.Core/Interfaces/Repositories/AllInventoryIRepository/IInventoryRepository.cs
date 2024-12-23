@@ -11,5 +11,7 @@ namespace InventoryManagementSystem.Core.Interfaces.Repositories.AllInventoryIRe
     {
         Task<Inventory> GetProductInventory(int productId);
         Task InsertProductInventory(Inventory inventory);
+        Task DeleteProductInventory(int productId);
+        Task AdjustProductInventory(int productId,int stockAdjustment);
     }
 }

@@ -53,6 +53,9 @@ namespace InventoryManagementSystem.API.Middlewares
                     case AuthException authException:
                         await HandleExceptionAsync(context, authException.Message, HttpStatusCode.Unauthorized);
                         break;
+                    case BadRequestException badRequestException:
+                        await HandleExceptionAsync(context, badRequestException.Message, HttpStatusCode.BadRequest);
+                        break;
                     default:
                         await HandleExceptionAsync(context, "An unhandled exception occurred.", HttpStatusCode.InternalServerError);
                         break;

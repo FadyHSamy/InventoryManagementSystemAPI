@@ -17,7 +17,7 @@ namespace InventoryManagementSystem.Core.Services.AllProductServices
         private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
         private readonly IServiceProvider _serviceProvider;
-        public ProductService(IProductRepository productRepository, IMapper mapper, ICategoryService categoryService, IServiceProvider serviceProvider)
+        public ProductService(IProductRepository productRepository, IMapper mapper, IServiceProvider serviceProvider)
         {
             _productRepository = productRepository;
             _mapper = mapper;
@@ -33,6 +33,9 @@ namespace InventoryManagementSystem.Core.Services.AllProductServices
                 {
                     throw new NotFoundException("No Product Exist With This Id");
                 }
+
+                await _serviceProvider.GetRequiredService<IInventoryServices>().DeleteProductInventory(ProductId);
+
                 await _productRepository.DeleteProduct(ProductId);
             }
             catch (Exception)
