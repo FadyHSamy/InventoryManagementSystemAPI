@@ -20,13 +20,12 @@ namespace InventoryManagementSystem.Infrastructure.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly IAuthRepository _authRepository;
         private readonly IServiceProvider _serviceProvider;
-        public AuthService(IAuthRepository authRepository, IServiceProvider serviceProvider)
+        public AuthService(IServiceProvider serviceProvider)
         {
-            _authRepository = authRepository;
             _serviceProvider = serviceProvider;
         }
+
         public async Task<LoginResponseDto> Login(LoginRequestDto loginRequestDto)
         {
             string passwordHashed = await _serviceProvider.GetRequiredService<IUserService>().GetUserHashPassword(loginRequestDto.Username);
@@ -34,36 +33,50 @@ namespace InventoryManagementSystem.Infrastructure.Services
             bool isValid = Helpers.VerifyHashPassword(loginRequestDto.Password, passwordHashed);
             if (!isValid)
             {
-                throw new AuthException("username or password is incorrect");
+                throw new AuthException("Username or password is incorrect");
             }
-            string token = await _serviceProvider.GetRequiredService<IJwtService>().GenerateUserToken(loginRequestDto.Username);
+
+            var jwtService = _serviceProvider.GetRequiredService<IJwtService>();
+            string accessToken = await jwtService.GenerateUserToken(loginRequestDto.Username);
+            string refreshToken = jwtService.GenerateRefreshToken(loginRequestDto.Username);
 
             var userInformation = await _serviceProvider.GetRequiredService<IUserService>().GetUserInformation(loginRequestDto.Username);
-
-
-            LoginResponseDto response = new LoginResponseDto()
+            return new LoginResponseDto
             {
-                token = token,
-                user = new UserLoginResponse
+                Token = accessToken,
+                RefreshToken = refreshToken,
+                User = new UserLoginResponse
                 {
                     username = loginRequestDto.Username,
                     role = userInformation.RoleName
                 }
             };
-
-            return response;
         }
 
-        public async Task<string> RefreshToken(string token)
+        public async Task<TokenResponseDto> RefreshToken(string expiredToken, string refreshToken)
         {
-            var principal = _serviceProvider.GetRequiredService<IJwtService>().ValidateToken(token);
+            var jwtService = _serviceProvider.GetRequiredService<IJwtService>();
+
+            var principal = jwtService.ValidateRefreshToken(refreshToken);
             if (principal == null)
             {
-                return null; // Invalid token
+                throw new AuthException("Invalid refresh token");
             }
 
             var username = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            return await _serviceProvider.GetRequiredService<IJwtService>().GenerateUserToken(username);
+            if (string.IsNullOrEmpty(username))
+            {
+                throw new AuthException("Invalid token data");
+            }
+
+            string newAccessToken = await jwtService.GenerateUserToken(username);
+            string newRefreshToken = jwtService.GenerateRefreshToken(username);
+
+            return new TokenResponseDto
+            {
+                Token = newAccessToken,
+                RefreshToken = newRefreshToken
+            };
         }
 
     }

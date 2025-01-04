@@ -19,15 +19,28 @@ namespace InventoryManagementSystem.API.Controllers
             _authService = authService;
         }
 
-        [HttpPost("login")]
+        [HttpPost("Login")]
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto)
         {
             try
             {
-               var res =  await _authService.Login(loginRequestDto);
-                ApiResponse<object> response = ApiResponseHelper.Success<object>(Request, "User Logged successfully",res);
-                return Ok(response);
+                var result = await _authService.Login(loginRequestDto);
+                return Ok(ApiResponseHelper.Success(Request, "User logged in successfully", result));
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        [HttpPost("RefreshToken")]
+        [AllowAnonymous]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestDto request)
+        {
+            try
+            {
+                var result = await _authService.RefreshToken(request.Token, request.RefreshToken);
+                return Ok(ApiResponseHelper.Success(Request, "Tokens refreshed successfully", result));
             }
             catch (Exception)
             {

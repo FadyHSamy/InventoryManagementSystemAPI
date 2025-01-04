@@ -13,8 +13,9 @@ namespace InventoryManagementSystem.Core.DTOs.AuthDto
     }
     public class LoginResponseDto
     {
-        public string token { get; set; }
-        public UserLoginResponse user { get; set; }
+        public string Token { get; set; }
+        public string RefreshToken { get; set; }
+        public UserLoginResponse User { get; set; }
     }
     public class UserLoginResponse
     {

@@ -1,5 +1,6 @@
 ﻿using InventoryManagementSystem.Core.DTOs.AuthDto;
 using InventoryManagementSystem.Core.DTOs.UserDto;
+using InventoryManagementSystem.Core.Exceptions;
 using InventoryManagementSystem.Core.Interfaces.Services.AllJwtServices;
 using InventoryManagementSystem.Core.Interfaces.Services.AllUserIServices;
 using InventoryManagementSystem.Infrastructure.Configuration;
@@ -27,43 +28,34 @@ namespace InventoryManagementSystem.Infrastructure.Services
         public async Task<string> GenerateUserToken(string username)
         {
             var userInformation = await _userService.GetUserInformation(username);
-            return GenerateToken(userInformation);
+            return GenerateToken(userInformation, _jwtOptions.ExpiryMinutes);
         }
-        public string GenerateToken(UserInformationResponse userInformationResponse)
+        public string GenerateRefreshToken(string username)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtOptions.Secret);
-            
+            var tokenHandler = new JwtSecurityTokenHandler();
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim(ClaimTypes.NameIdentifier, userInformationResponse.Username),
-                }),
-                Expires = DateTime.UtcNow.AddMinutes(_jwtOptions.ExpiryMinutes),
-                Issuer = _jwtOptions.Issuer,
-                Audience = _jwtOptions.Audience,
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
-                    SecurityAlgorithms.HmacSha256Signature)
+                Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.NameIdentifier, username) }),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
-
-        public ClaimsPrincipal ValidateToken(string token)
+        public ClaimsPrincipal ValidateRefreshToken(string refreshToken)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtOptions.Secret);
 
             try
             {
-                var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
+                var principal = tokenHandler.ValidateToken(refreshToken, new TokenValidationParameters
                 {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidIssuer = _jwtOptions.Issuer,
-                    ValidAudience = _jwtOptions.Audience,
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateLifetime = true
@@ -75,6 +67,27 @@ namespace InventoryManagementSystem.Infrastructure.Services
             {
                 return null;
             }
+        }
+
+        private string GenerateToken(UserInformationResponse userInformationResponse, int expiryMinutes)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_jwtOptions.Secret);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+                new Claim(ClaimTypes.NameIdentifier, userInformationResponse.Username)
+            }),
+                Expires = DateTime.UtcNow.AddMinutes(expiryMinutes),
+                Issuer = _jwtOptions.Issuer,
+                Audience = _jwtOptions.Audience,
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
     }
 }

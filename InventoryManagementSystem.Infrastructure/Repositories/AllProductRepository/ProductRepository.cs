@@ -51,7 +51,7 @@ namespace InventoryManagementSystem.Infrastructure.Repositories.AllProductReposi
                 parameters.Add("ProductDescription", Product.ProductDescription, dbType: DbType.String);
                 parameters.Add("ProductPrice", Product.ProductPrice, dbType: DbType.Decimal);
                 parameters.Add("CategoryId", Product.CategoryId, dbType: DbType.Int64);
-                parameters.Add("ProductId", "", dbType: DbType.Decimal, direction: ParameterDirection.Output);
+                parameters.Add("ProductId", "", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
                 await _connection.ExecuteAsync(storedProcedure, parameters, commandType: CommandType.StoredProcedure, transaction: _transaction);
 

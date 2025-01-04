@@ -10,8 +10,8 @@ namespace InventoryManagementSystem.Core.Interfaces.Services.AllJwtServices
 {
     public interface IJwtService
     {
-        string GenerateToken(UserInformationResponse userInformationResponse);
-        ClaimsPrincipal ValidateToken(string token);
         Task<string> GenerateUserToken(string username);
+        string GenerateRefreshToken(string username);
+        ClaimsPrincipal ValidateRefreshToken(string refreshToken);
     }
 }

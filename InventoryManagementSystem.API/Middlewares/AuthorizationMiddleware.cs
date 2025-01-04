@@ -31,7 +31,7 @@ namespace InventoryManagementSystem.API.Middlewares
                 throw new AuthException("Unauthorized: No token provided.");
             }
 
-            var principal = jwtService.ValidateToken(token);
+            var principal = jwtService.ValidateRefreshToken(token);
             if (principal == null)
             {
                 throw new AuthException("Unauthorized: Invalid token.");
