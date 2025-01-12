@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using InventoryManagementSystem.Core.DTOs.ProductDto;
 using InventoryManagementSystem.Core.Entities.Category;
 using InventoryManagementSystem.Core.Entities.Product;
 using InventoryManagementSystem.Core.Exceptions;
@@ -24,13 +25,13 @@ namespace InventoryManagementSystem.Infrastructure.Repositories.AllProductReposi
             _transaction = unitOfWork.Transaction;
         }
 
-        public async Task<List<Product>> GetProducts()
+        public async Task<List<GetProductsResponse>> GetProducts()
         {
             try
             {
                 var storedProcedure = "[ims].[GetProducts]";
 
-                var products = await _connection.QueryAsync<Product>(storedProcedure, commandType: CommandType.StoredProcedure, transaction: _transaction);
+                var products = await _connection.QueryAsync<GetProductsResponse>(storedProcedure, commandType: CommandType.StoredProcedure, transaction: _transaction);
                 return products.ToList();
 
             }
@@ -83,7 +84,7 @@ namespace InventoryManagementSystem.Infrastructure.Repositories.AllProductReposi
             }
         }
 
-        public async Task<Product> GetProduct(int ProductId)
+        public async Task<GetProductResponse> GetProduct(int ProductId)
         {
             try
             {
@@ -92,8 +93,7 @@ namespace InventoryManagementSystem.Infrastructure.Repositories.AllProductReposi
                 DynamicParameters parameters = new DynamicParameters();
                 parameters.Add("ProductId", ProductId, dbType: DbType.Int64);
 
-                Product product = await _connection.QueryFirstOrDefaultAsync<Product>(storedProcedure, parameters, commandType: CommandType.StoredProcedure, transaction: _transaction);
-                return product;
+                return await _connection.QueryFirstOrDefaultAsync<GetProductResponse>(storedProcedure, parameters, commandType: CommandType.StoredProcedure, transaction: _transaction);
 
             }
             catch (Exception ex)

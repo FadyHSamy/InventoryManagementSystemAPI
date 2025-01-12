@@ -30,16 +30,11 @@ namespace InventoryManagementSystem.Infrastructure.Repositories.AllLoggingReposi
                 var storedProcedure = "[ims].[InsertLoggingError]";
 
                 DynamicParameters parameters = new DynamicParameters();
-                parameters.Add("LogLevel", loggingError.LogLevel);
                 parameters.Add("Message", loggingError.Message);
                 parameters.Add("Exception", loggingError.Exception);
-                parameters.Add("InnerException", loggingError.InnerException);
-                parameters.Add("StackTrace", loggingError.StackTrace);
                 parameters.Add("ApplicationName", loggingError.ApplicationName);
                 parameters.Add("UserID", loggingError.UserID);
-                parameters.Add("MachineName", loggingError.MachineName);
                 parameters.Add("Source", loggingError.Source);
-                parameters.Add("RequestID", loggingError.RequestID);
                 parameters.Add("AdditionalInfo", loggingError.AdditionalInfo);
 
                 await _connection.ExecuteAsync(storedProcedure, parameters, commandType: CommandType.StoredProcedure, transaction: _transaction);

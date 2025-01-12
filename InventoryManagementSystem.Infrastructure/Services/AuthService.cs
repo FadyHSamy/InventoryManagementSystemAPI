@@ -63,7 +63,7 @@ namespace InventoryManagementSystem.Infrastructure.Services
                 throw new AuthException("Invalid refresh token");
             }
 
-            var username = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var username = principal.FindFirst("username")?.Value;
             if (string.IsNullOrEmpty(username))
             {
                 throw new AuthException("Invalid token data");

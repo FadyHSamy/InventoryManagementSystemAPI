@@ -28,7 +28,7 @@ namespace InventoryManagementSystem.Core.Services.AllProductServices
         {
             try
             {
-                Product product = await _productRepository.GetProduct(ProductId);
+                var product = await _productRepository.GetProduct(ProductId);
                 if (product == null)
                 {
                     throw new NotFoundException("No Product Exist With This Id");
@@ -52,20 +52,12 @@ namespace InventoryManagementSystem.Core.Services.AllProductServices
                 {
                     throw new ValidationCustomException("ProductId Is Required");
                 }
-                Product product = await _productRepository.GetProduct(ProductId);
+                var product = await _productRepository.GetProduct(ProductId);
                 if (product == null)
                 {
                     throw new NotFoundException("No Product Exist With This Id");
                 }
-                GetProductResponse response = new()
-                {
-                    CategoryId = product.CategoryId,
-                    ProductName = product.ProductName,
-                    ProductDescription = product.ProductDescription,
-                    ProductPrice = product.ProductPrice,
-                    ProductId = product.ProductId
-                };
-                return response;
+                return product;
             }
             catch (Exception)
             {
@@ -77,15 +69,9 @@ namespace InventoryManagementSystem.Core.Services.AllProductServices
         {
             try
             {
-                List<Product> product = await _productRepository.GetProducts();
-                List<GetProductsResponse> response = product.Select(product => new GetProductsResponse()
-                {
-                    ProductId = product.ProductId,
-                    ProductName = product.ProductName,
-                    ProductDescription = product.ProductDescription,
-                    ProductPrice = product.ProductPrice
-                }).ToList();
-                return response;
+                List<GetProductsResponse> product = await _productRepository.GetProducts();
+
+                return product;
             }
             catch (Exception)
             {

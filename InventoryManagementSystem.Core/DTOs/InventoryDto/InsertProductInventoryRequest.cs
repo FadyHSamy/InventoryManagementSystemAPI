@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static InventoryManagementSystem.Core.Validators.InventoryValidations;
+using static InventoryManagementSystem.Core.Validators.ProductValidations;
 
 namespace InventoryManagementSystem.Core.DTOs.InventoryDto
 {

@@ -1,5 +1,6 @@
 ﻿using InventoryManagementSystem.Core.DTOs.AuthDto;
 using InventoryManagementSystem.Core.DTOs.UserDto;
+using InventoryManagementSystem.Core.Entities.User;
 using InventoryManagementSystem.Core.Exceptions;
 using InventoryManagementSystem.Core.Interfaces.Services.AllJwtServices;
 using InventoryManagementSystem.Core.Interfaces.Services.AllUserIServices;
@@ -20,7 +21,7 @@ namespace InventoryManagementSystem.Infrastructure.Services
     {
         private readonly JwtOptions _jwtOptions;
         private readonly IUserService _userService;
-        public JwtService(IOptions<JwtOptions> jwtOptions,IUserService userService)
+        public JwtService(IOptions<JwtOptions> jwtOptions, IUserService userService)
         {
             _jwtOptions = jwtOptions.Value;
             _userService = userService;
@@ -37,7 +38,9 @@ namespace InventoryManagementSystem.Infrastructure.Services
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.NameIdentifier, username) }),
+                Subject = new ClaimsIdentity(new[] {
+                        new Claim("username", username),
+                    }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
@@ -78,7 +81,7 @@ namespace InventoryManagementSystem.Infrastructure.Services
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                new Claim(ClaimTypes.NameIdentifier, userInformationResponse.Username)
+                new Claim("username", userInformationResponse.Username),
             }),
                 Expires = DateTime.UtcNow.AddMinutes(expiryMinutes),
                 Issuer = _jwtOptions.Issuer,

@@ -5,6 +5,7 @@ using InventoryManagementSystem.Core.Exceptions;
 using InventoryManagementSystem.Core.Interfaces.Services.AllProductIServices;
 using InventoryManagementSystem.Core.Utilities.Helpers;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace InventoryManagementSystem.API.Controllers
 {
@@ -29,8 +30,8 @@ namespace InventoryManagementSystem.API.Controllers
                     throw new ValidationCustomException("ProductId Required");
                 }
                 GetProductResponse productResponse = await _productService.GetProduct(ProductId);
-                ApiResponse<object> response = ApiResponseHelper.Success<object>(Request, null, new { product = productResponse });
-                return Ok(response);
+
+                return Ok(ApiResponseHelper.Success(Request, null, new { product = productResponse }));
             }
             catch (Exception)
             {
@@ -44,8 +45,8 @@ namespace InventoryManagementSystem.API.Controllers
             try
             {
                 List<GetProductsResponse> getProductsResponse = await _productService.GetProducts();
-                ApiResponse<object> response = ApiResponseHelper.Success<object>(Request, null, new { product = getProductsResponse });
-                return Ok(response);
+
+                return Ok(ApiResponseHelper.Success<object>(Request, null, new { product = getProductsResponse }));
             }
             catch (Exception)
             {
@@ -60,8 +61,8 @@ namespace InventoryManagementSystem.API.Controllers
             try
             {
                 await _productService.InsertProduct(insertProductRequest);
-                ApiResponse<object> response = ApiResponseHelper.Success<object>(Request, "Product Added Successfully");
-                return Ok(response);
+
+                return Ok(ApiResponseHelper.Success<object>(Request, "Product Added Successfully"));
             }
             catch (Exception ex)
             {
@@ -80,8 +81,8 @@ namespace InventoryManagementSystem.API.Controllers
                     throw new ValidationCustomException("ProductId Required");
                 }
                 await _productService.DeleteProduct(ProductId);
-                ApiResponse<object> response = ApiResponseHelper.Success<object>(Request, "Product Deleted successfully");
-                return Ok(response);
+
+                return Ok(ApiResponseHelper.Success<object>(Request, "Product Deleted successfully"));
             }
             catch (Exception)
             {

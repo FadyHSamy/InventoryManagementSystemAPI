@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Azure.Core;
 using InventoryManagementSystem.Core.Entities.Shared;
@@ -56,6 +57,9 @@ namespace InventoryManagementSystem.API.Middlewares
                     case BadRequestException badRequestException:
                         await HandleExceptionAsync(context, badRequestException.Message, HttpStatusCode.BadRequest);
                         break;
+                    case ValidationException validationException:
+                        await HandleExceptionAsync(context, validationException.Message, HttpStatusCode.BadRequest);
+                        break;
                     default:
                         await HandleExceptionAsync(context, "An unhandled exception occurred.", HttpStatusCode.InternalServerError);
                         break;
@@ -69,19 +73,26 @@ namespace InventoryManagementSystem.API.Middlewares
             {
                 var scopedService = scope.ServiceProvider.GetRequiredService<ILoggingServices>();
 
+                string message = exception.Message;
+                if (message == "Unauthorized: Invalid token.")
+                {
+                    return;
+                }
+
+                var username = context.User?.FindFirst("username")?.Value ?? "Anonymous";
+
+                var request = context.Request;
+                var method = request.Method;
+                var requestUrl = request.GetDisplayUrl();
+
                 var loggingError = new LoggingError
                 {
-                    LogLevel = "Error",
-                    Message = exception.Message,
+                    Message = message,
                     Exception = JsonConvert.SerializeObject(exception),
-                    InnerException = exception.InnerException?.Message,
-                    StackTrace = exception.StackTrace,
-                    ApplicationName = "InventoryManagementSystem",
-                    UserID = context.User?.Identity?.Name ?? "Anonymous",
-                    MachineName = Environment.MachineName,
+                    ApplicationName = "InventoryManagementSystem.API",
+                    UserID = username,
                     Source = exception.Source,
-                    RequestID = context.TraceIdentifier,
-                    AdditionalInfo = context.Request.Method +" --> " + context.Request.GetDisplayUrl(),
+                    AdditionalInfo = $"{method} --> {requestUrl}",
                 };
 
                 await scopedService.InsertLoggingError(loggingError);

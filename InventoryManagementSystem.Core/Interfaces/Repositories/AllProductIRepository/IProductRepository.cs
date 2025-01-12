@@ -1,4 +1,5 @@
-﻿using InventoryManagementSystem.Core.Entities.Product;
+﻿using InventoryManagementSystem.Core.DTOs.ProductDto;
+using InventoryManagementSystem.Core.Entities.Product;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +10,8 @@ namespace InventoryManagementSystem.Core.Interfaces.Repositories.AllProductIRepo
 {
     public interface IProductRepository
     {
-        Task<Product> GetProduct(int ProductId);
-        Task<List<Product>> GetProducts();
+        Task<GetProductResponse> GetProduct(int ProductId);
+        Task<List<GetProductsResponse>> GetProducts();
         Task<int> InsertProduct(Product Product);
         Task DeleteProduct(int ProductId);
     }
